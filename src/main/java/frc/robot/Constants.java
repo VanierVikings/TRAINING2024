@@ -50,7 +50,7 @@ public final class Constants {
     public static final double feedSpeed = 1.0;
     public static final double topIntakeSpeed = 0.5;
     public static final double delay = 5;
-    public static final double shooterSpeed = 3500;
+    public static final double shooterSpeed = 5000;
   }
 
   public static class HangConstants{

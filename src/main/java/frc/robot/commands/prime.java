@@ -19,17 +19,16 @@ public class prime extends Command{
     @Override
     public void initialize() {
       mShooter.RPMtarget(ShooterConstants.shooterSpeed, ShooterConstants.shooterSpeed);
-    }
-
-    @Override 
-    public void execute(){
-      mShooter.RPMtarget(ShooterConstants.shooterSpeed,ShooterConstants.shooterSpeed);
       if (mShooter.reachedTargetRPM(ShooterConstants.shooterSpeed)){
           RobotContainer.controllers.mControls.getHID().setRumble(RumbleType.kBothRumble, 0.3);;
       }
       else{
         RobotContainer.controllers.mControls.getHID().setRumble(RumbleType.kBothRumble, 0);
       }
+    }
+
+    @Override 
+    public void execute(){
     }
 
     @Override

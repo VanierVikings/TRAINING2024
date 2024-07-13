@@ -8,18 +8,22 @@ import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.RobotContainer;
 
 public class Shooter extends SubsystemBase {
     private final CANSparkBase shooterPrimeRight = new CANSparkMax(ShooterConstants.shooterPrimeRightId, MotorType.kBrushless);
     private final CANSparkBase shooterPrimeLeft = new CANSparkMax(ShooterConstants.shooterPrimeLeftId, MotorType.kBrushless);
     private final VictorSPX shooterTopFeed = new VictorSPX(ShooterConstants.shooterTopFeedId);
-    private PIDController  leftMotorPID = new PIDController(0,0,0);
-    private PIDController  rightMotorPID = new PIDController(0,0,0);
+    private PIDController  leftMotorPID = new PIDController(0.01,0,0);
+    private PIDController  rightMotorPID = new PIDController(0.01,0,0);
     private double targetRPM = ShooterConstants.shooterSpeed;
     public double currentRPM = 0;
+    public boolean auton = true;
 
     public Shooter() {
         shooterPrimeLeft.restoreFactoryDefaults();
@@ -30,8 +34,6 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setShooterFeed(double speed){
-        shooterPrimeLeft.setIdleMode(IdleMode.kBrake);
-        shooterPrimeRight.setIdleMode(IdleMode.kBrake);
         shooterTopFeed.set(VictorSPXControlMode.PercentOutput, speed);
     }
 
@@ -46,16 +48,11 @@ public class Shooter extends SubsystemBase {
 
     public void RPMtarget(double LEFTSPEED, double RIGHTSPEED){
         shooterPrimeLeft.setVoltage(leftMotorPID.calculate(shooterPrimeLeft.getEncoder().getVelocity(), LEFTSPEED));
-        shooterPrimeRight.setVoltage(rightMotorPID.calculate(shooterPrimeRight.getEncoder().getVelocity(), RIGHTSPEED));
+        shooterPrimeRight.setVoltage(-rightMotorPID.calculate(shooterPrimeRight.getEncoder().getVelocity(), RIGHTSPEED));
     }
 
     public boolean reachedTargetRPM(double target){
-        return (Math.abs(currentRPM) >= Math.abs((targetRPM - Constants.DriverConstants.shooterTolerance)));
-    }
-
-    public void setShooterPrime(double speed){
-        shooterPrimeRight.set(speed);
-        shooterPrimeLeft.set(-speed);
+        return (Math.abs(currentRPM) > Math.abs((targetRPM - Constants.DriverConstants.shooterTolerance)));
     }
 
     public double leftRPM(){
@@ -73,5 +70,13 @@ public class Shooter extends SubsystemBase {
     @Override 
     public void periodic(){
         currentRPM = leftRPM();
+        if (reachedTargetRPM(targetRPM) && !auton){
+            RobotContainer.controllers.mControls.getHID().setRumble(RumbleType.kBothRumble, 0.3);
+        }
+        else {
+            RobotContainer.controllers.mControls.getHID().setRumble(RumbleType.kBothRumble, 0);
+        }
+        SmartDashboard.putBoolean("RPM Reached: ", reachedTargetRPM(ShooterConstants.shooterSpeed));
+        SmartDashboard.putNumber("Prime Speed", currentRPM);
     }
 }

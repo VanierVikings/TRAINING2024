@@ -20,8 +20,7 @@ import frc.robot.commands.hangRetract;
 import frc.robot.commands.pointAndShoot;
 import frc.robot.commands.prime;
 import frc.robot.commands.topIntake;
-import frc.robot.commands.Autos.shootPreload;
-import frc.robot.commands.Autos.taxi;
+import frc.robot.autonCommands.primeNshoot;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hang;
 import frc.robot.subsystems.Intake;
@@ -63,14 +62,11 @@ public class RobotContainer {
         });
         
         NamedCommands.registerCommand("prime", new prime(mShooter));
-        NamedCommands.registerCommand("pointAndShoot", new pointAndShoot(mShooter, mIntake));
+        NamedCommands.registerCommand("primeNshoot", new primeNshoot(mShooter, mIntake));
         NamedCommands.registerCommand("floorIntake", new floorIntake(mIntake));
         NamedCommands.registerCommand("ampShoot", new ampShoot(mShooter, mIntake));
         configureBindings();
         autoChooser = AutoBuilder.buildAutoChooser();
-
-        autoChooser.setDefaultOption("Shoot Preload", new shootPreload(mShooter, mIntake));
-        autoChooser.addOption("Taxi", new taxi(mDrivetrain));
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
         
@@ -80,16 +76,16 @@ public class RobotContainer {
     private void configureBindings() {
         // Tank Drive (single controller)
         //FOR DUAL CONTROLLER SETUP COMMENT THIS BLOCK AND UNCOMMENT THE NEXT BLOCK
-        mDrivetrain.setDefaultCommand(
+        /*mDrivetrain.setDefaultCommand(
                 new RunCommand(
                         () -> mDrivetrain.drive(controllers.mControls.getLeftY(), controllers.mControls.getRightY()),
-                        mDrivetrain));
+                        mDrivetrain));*/
 
         /* FOR DUAL CONTROLLER SETUP UNCOMMENT THIS BLOCK*/
         //Tank Drive (2 controllers)            
-        /*mDrivetrain.setDefaultCommand(new RunCommand(
+        mDrivetrain.setDefaultCommand(new RunCommand(
                 () -> mDrivetrain.drive(controllers.mDriver.getLeftY(), controllers.mDriver.getRightY()),
-                mDrivetrain));*/
+                mDrivetrain));
 
         // Amp Shoot
         controllers.mControls

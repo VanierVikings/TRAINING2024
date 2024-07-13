@@ -17,7 +17,6 @@ public class topIntake extends Command{
 
     @Override
     public void initialize() {
-      mShooter.setShooterPrime(-ShooterConstants.topIntakeSpeed);
     }
 
     @Override

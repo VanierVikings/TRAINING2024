@@ -165,10 +165,7 @@ public class Drivetrain extends SubsystemBase {
     drivetrain.tankDrive(left, right, true);
   }
 
-  public void driveKin(double xSpeed, double rot) {
-    var wheelSpeeds = kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
-    setSpeeds(wheelSpeeds);
-  }
+
 
   @Override
   public void periodic(){
@@ -220,8 +217,8 @@ public class Drivetrain extends SubsystemBase {
         m_leftPIDController.calculate(driveEncoderLeft.getRate(), speeds.leftMetersPerSecond);
     final double rightOutput =
         m_rightPIDController.calculate(driveEncoderRight.getRate(), speeds.rightMetersPerSecond);
-    leftFront.set(leftOutput + leftFeedforward/RobotController.getBatteryVoltage());
-    rightFront.set(rightOutput + rightFeedforward/RobotController.getBatteryVoltage());
+    leftFront.setVoltage(-(leftOutput + leftFeedforward/RobotController.getBatteryVoltage()));
+    rightFront.setVoltage(-(rightOutput + rightFeedforward/RobotController.getBatteryVoltage()));
   }
 
   public void chassisDrive(ChassisSpeeds speed){

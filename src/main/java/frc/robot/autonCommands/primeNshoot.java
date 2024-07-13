@@ -1,41 +1,40 @@
-package frc.robot.commands;
+package frc.robot.autonCommands;
 
-import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Intake;
-import frc.robot.Constants.ShooterConstants;
+import frc.robot.subsystems.Shooter;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.ShooterConstants;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
-public class pointAndShoot extends Command{
+public class primeNshoot extends Command{
     Shooter mShooter;
     Intake mIntake;
 
-    public pointAndShoot(Shooter shooter, Intake intake){
+    public primeNshoot(Shooter shooter, Intake intake){
       mShooter = shooter;
       mIntake = intake;
-      setName("pointAndShoot");
-      addRequirements(shooter);
+      setName("primeNshoot");
     }
 
     @Override
     public void initialize() {
-      if (mShooter.reachedTargetRPM(ShooterConstants.shooterSpeed)){
+      mShooter.RPMtarget(-ShooterConstants.shooterSpeed, -ShooterConstants.shooterSpeed);
+    }
+
+    @Override 
+    public void execute(){
+    if (mShooter.reachedTargetRPM(ShooterConstants.shooterSpeed)){
         mIntake.intakeFeed(ShooterConstants.feedSpeed);
         mShooter.setShooterFeed(ShooterConstants.feedSpeed);
         return;
-      }
+    }
     }
 
-    @Override
-    public void execute() {
-
-    }
-  
     @Override
     public void end(boolean interrupted) {
+      mShooter.stop();
       mIntake.intakeFeed(0);
       mShooter.setShooterFeed(0);
     }

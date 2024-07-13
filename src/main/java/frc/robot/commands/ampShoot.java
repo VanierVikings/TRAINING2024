@@ -20,9 +20,8 @@ public class ampShoot extends Command{
 
     @Override
     public void initialize() {
-      mShooter.setShooterPrime(0.06);
+      mShooter.changeTargetRPM(0.06);
       mIntake.intakeFeed(ShooterConstants.primeSpeed);
-      mShooter.setShooterFeed(ShooterConstants.primeSpeed);
     }
 
     @Override
