@@ -23,8 +23,8 @@ public final class Constants {
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kS = 0;
-    public static final double kV = 2.30;
-    public static final double kA = 0.49;
+    public static final double kV = 2.16;
+    public static final double kA = 0.60;
     public static final double shooterTolerance = 100;
   }
 

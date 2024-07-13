@@ -140,10 +140,10 @@ public class Drivetrain extends SubsystemBase {
     gyro.getRotation2d(), driveEncoderLeft.getDistance(), driveEncoderRight.getDistance());
 
     AutoBuilder.configureLTV(
-      this::getPose, // Robot pose supplier
+      this::getPose, // Robot pose supplierz` 
       this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
       this::giveCurrentSpeeds, // Current ChassisSpeeds supplier
-      this::drive, // Method that will drive the robot given ChassisSpeeds
+      this::chassisDrive, // Method that will drive the robot given ChassisSpeeds
       0.02, // Robot control loop period in seconds. Default is 0.02
       new ReplanningConfig(), // Default path replanning config. See the API for the options here
       () -> {
@@ -213,7 +213,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
-    final double leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
+    final double leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond); 
     final double rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
 
     final double leftOutput =
@@ -224,7 +224,7 @@ public class Drivetrain extends SubsystemBase {
     rightFront.set(rightOutput + rightFeedforward/RobotController.getBatteryVoltage());
   }
 
-  public void drive(ChassisSpeeds speed){
+  public void chassisDrive(ChassisSpeeds speed){
     setSpeeds(kinematics.toWheelSpeeds(speed));
   }
 
