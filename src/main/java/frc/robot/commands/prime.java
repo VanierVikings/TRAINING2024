@@ -24,8 +24,8 @@ public class prime extends Command{
     @Override 
     public void execute(){
       mShooter.RPMtarget(ShooterConstants.shooterSpeed,ShooterConstants.shooterSpeed);
-      if (mShooter.reachedTargetRPM(3500)){
-        RobotContainer.controllers.mControls.getHID().setRumble(RumbleType.kBothRumble, 0.3);;
+      if (mShooter.reachedTargetRPM(ShooterConstants.shooterSpeed)){
+          RobotContainer.controllers.mControls.getHID().setRumble(RumbleType.kBothRumble, 0.3);;
       }
       else{
         RobotContainer.controllers.mControls.getHID().setRumble(RumbleType.kBothRumble, 0);

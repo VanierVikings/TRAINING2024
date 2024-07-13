@@ -18,6 +18,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.proto.Kinematics;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
@@ -141,8 +142,8 @@ public class Drivetrain extends SubsystemBase {
     AutoBuilder.configureLTV(
       this::getPose, // Robot pose supplier
       this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-      this::getChassiSpeeds, // Current ChassisSpeeds supplier
-      this::driveChassis, // Method that will drive the robot given ChassisSpeeds
+      this::giveCurrentSpeeds, // Current ChassisSpeeds supplier
+      this::drive, // Method that will drive the robot given ChassisSpeeds
       0.02, // Robot control loop period in seconds. Default is 0.02
       new ReplanningConfig(), // Default path replanning config. See the API for the options here
       () -> {
@@ -175,15 +176,20 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("Encoder Right FRONT Position", encoderRightFront.getPosition());
     SmartDashboard.putNumber("Encoder Left REAR Position", encoderLeftRear.getPosition());
     SmartDashboard.putNumber("Encoder Right REAR Position", encoderRightRear.getPosition());
-    SmartDashboard.putNumber("DRIVE Encoder Left VELOCITY", driveEncoderLeft.getRate());
-    SmartDashboard.putNumber("DRIVE Encoder Right VELOCITY", driveEncoderRight.getRate());
+    SmartDashboard.putNumber("ABS Encoder Left VELOCITY", driveEncoderLeft.getRate());
+    SmartDashboard.putNumber("ABS Encoder Right VELOCITY", driveEncoderRight.getRate());
+    SmartDashboard.putNumber("ABS LEFT ENC", driveEncoderLeft.getDistance());
+    SmartDashboard.putNumber("ABS Right ENC", driveEncoderRight.getDistance());
+
     SmartDashboard.putNumber("Gyro", gyro.getAngle());
     odometry.update(gyro.getRotation2d(), driveEncoderLeft.getDistance(), driveEncoderRight.getDistance());
   }
 
 
-  public ChassisSpeeds getChassiSpeeds() {
-    return new ChassisSpeeds(driveEncoderLeft.getRate(), driveEncoderRight.getRate(), gyro.getAngle());
+  public ChassisSpeeds giveCurrentSpeeds() {
+    var wheelSpeeds = new DifferentialDriveWheelSpeeds(driveEncoderLeft.getRate(), driveEncoderRight.getRate());
+    ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(wheelSpeeds);
+    return chassisSpeeds;
   }
 
   public void resetEncoders() {
@@ -218,7 +224,7 @@ public class Drivetrain extends SubsystemBase {
     rightFront.set(rightOutput + rightFeedforward/RobotController.getBatteryVoltage());
   }
 
-  public void driveChassis(ChassisSpeeds speed){
+  public void drive(ChassisSpeeds speed){
     setSpeeds(kinematics.toWheelSpeeds(speed));
   }
 

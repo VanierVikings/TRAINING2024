@@ -80,16 +80,16 @@ public class RobotContainer {
     private void configureBindings() {
         // Tank Drive (single controller)
         //FOR DUAL CONTROLLER SETUP COMMENT THIS BLOCK AND UNCOMMENT THE NEXT BLOCK
-        /*mDrivetrain.setDefaultCommand(
+        mDrivetrain.setDefaultCommand(
                 new RunCommand(
-                        () -> mDrivetrain.drive(mControls.getLeftY(), mControls.getRightY()),
-                        mDrivetrain));*/
+                        () -> mDrivetrain.drive(controllers.mControls.getLeftY(), controllers.mControls.getRightY()),
+                        mDrivetrain));
 
         /* FOR DUAL CONTROLLER SETUP UNCOMMENT THIS BLOCK*/
         //Tank Drive (2 controllers)            
-         mDrivetrain.setDefaultCommand(new RunCommand(
+        /*mDrivetrain.setDefaultCommand(new RunCommand(
                 () -> mDrivetrain.drive(controllers.mDriver.getLeftY(), controllers.mDriver.getRightY()),
-                mDrivetrain));
+                mDrivetrain));*/
 
         // Amp Shoot
         controllers.mControls
