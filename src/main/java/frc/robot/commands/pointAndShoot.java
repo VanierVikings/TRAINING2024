@@ -20,13 +20,20 @@ public class pointAndShoot extends Command{
 
     @Override
     public void initialize() {
-      mShooter.setShooterPrime(ShooterConstants.primeSpeed);
-      mIntake.intakeFeed(ShooterConstants.feedSpeed);
-      mShooter.setShooterFeed(ShooterConstants.feedSpeed);
+      mShooter.RPMtarget(ShooterConstants.shooterSpeed,ShooterConstants.shooterSpeed);
     }
 
     @Override
-    public void execute() {}
+    public void execute() {
+      if (mShooter.reachedTargetRPM(ShooterConstants.shooterSpeed)){
+        mIntake.intakeFeed(ShooterConstants.feedSpeed);
+        mShooter.RPMtarget(ShooterConstants.shooterSpeed,ShooterConstants.shooterSpeed);
+        mShooter.setShooterFeed(ShooterConstants.feedSpeed);
+      }
+      else {
+        mShooter.RPMtarget(ShooterConstants.shooterSpeed,ShooterConstants.shooterSpeed);
+      }
+    }
   
     @Override
     public void end(boolean interrupted) {

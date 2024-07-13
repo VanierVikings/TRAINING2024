@@ -25,6 +25,7 @@ public final class Constants {
     public static final double kS = 0;
     public static final double kV = 2.30;
     public static final double kA = 0.49;
+    public static final double shooterTolerance = 100;
   }
 
   public static class OperatorConstants{
@@ -49,6 +50,7 @@ public final class Constants {
     public static final double feedSpeed = 1.0;
     public static final double topIntakeSpeed = 0.5;
     public static final double delay = 5;
+    public static final double shooterSpeed = 3500;
   }
 
   public static class HangConstants{

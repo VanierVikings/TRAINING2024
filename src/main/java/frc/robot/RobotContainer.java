@@ -2,7 +2,9 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,17 +28,40 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
 public class RobotContainer {
-    private final Drivetrain mDrivetrain = new Drivetrain();
-    private final Intake mIntake = new Intake();
-    private final Shooter mShooter = new Shooter();
-    private final Hang mHang = new Hang();
+        private final Field2d field;
+        private final Drivetrain mDrivetrain = new Drivetrain();
+        private final Intake mIntake = new Intake();
+        private final Shooter mShooter = new Shooter();
+        private final Hang mHang = new Hang();
 
-    private final SendableChooser<Command> autoChooser;
+        private final SendableChooser<Command> autoChooser;
+        public static class controllers{
+                public final static CommandXboxController mDriver = new CommandXboxController(OperatorConstants.driverPort);
+                public final static CommandXboxController mControls = new CommandXboxController(OperatorConstants.controlsPort);
+        }
 
-    private final CommandXboxController mDriver = new CommandXboxController(OperatorConstants.driverPort);
-    private final CommandXboxController mControls = new CommandXboxController(OperatorConstants.controlsPort);
+        public RobotContainer() {
+        field = new Field2d();
+        SmartDashboard.putData("Field", field);
 
-    public RobotContainer() {
+        // Logging callback for current robot pose
+        PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+            // Do whatever you want with the pose here
+            field.setRobotPose(pose);
+        });
+
+        // Logging callback for target robot pose
+        PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+            // Do whatever you want with the pose here
+            field.getObject("target pose").setPose(pose);
+        });
+
+        // Logging callback for the active path, this is sent as a list of poses
+        PathPlannerLogging.setLogActivePathCallback((poses) -> {
+            // Do whatever you want with the poses here
+            field.getObject("path").setPoses(poses);
+        });
+        
         NamedCommands.registerCommand("prime", new prime(mShooter));
         NamedCommands.registerCommand("pointAndShoot", new pointAndShoot(mShooter, mIntake));
         NamedCommands.registerCommand("floorIntake", new floorIntake(mIntake));
@@ -48,7 +73,9 @@ public class RobotContainer {
         autoChooser.addOption("Taxi", new taxi(mDrivetrain));
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
+        
     }
+
 
     private void configureBindings() {
         // Tank Drive (single controller)
@@ -61,90 +88,90 @@ public class RobotContainer {
         /* FOR DUAL CONTROLLER SETUP UNCOMMENT THIS BLOCK*/
         //Tank Drive (2 controllers)            
          mDrivetrain.setDefaultCommand(new RunCommand(
-                () -> mDrivetrain.drive(mDriver.getLeftY(), mDriver.getRightY()),
+                () -> mDrivetrain.drive(controllers.mDriver.getLeftY(), controllers.mDriver.getRightY()),
                 mDrivetrain));
 
         // Amp Shoot
-        mControls
+        controllers.mControls
 
                 .b()
                 .whileTrue(
                 new ampShoot(mShooter, mIntake).withTimeout(0.5));
 
         // Shooter Prime
-        mControls
+        controllers.mControls
                 .leftTrigger()
                 .whileTrue(
                         new prime(mShooter));
 
         // Shooter Launch
-        mControls
+        controllers.mControls
                 .leftBumper()
                 .whileTrue(
                         new pointAndShoot(mShooter, mIntake));
 
         // Floor Intake
-        mControls
+        controllers.mControls
                 .rightTrigger()
                 .whileTrue(
                         new floorIntake(mIntake));
 
         // Floor Intake Reverse
-        mControls
+        controllers.mControls
                 .rightBumper()
                 .whileTrue(
                         new floorReverse(mIntake));
 
         // Top Intake
-        mControls
+        controllers.mControls
                 .x()
                 .whileTrue(
                         new topIntake(mShooter));
 
         // Hang Winch
-        mControls
+        controllers.mControls
                 .a()
                 .whileTrue(
                         new hangRetract(mHang, HangConstants.speed));
 
         // Hang Unwinch
-        mControls
+        controllers.mControls
                 .y()
                 .whileTrue(
                         new hangRetract(mHang, -HangConstants.speed));
         
-        mControls
+        controllers.mControls
         .a()
-        .and(mControls.rightBumper())
+        .and(controllers.mControls.rightBumper())
         .whileTrue(mDrivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        mControls
+        controllers.mControls
                 .b()
-                .and(mControls.rightBumper())
+                .and(controllers.mControls.rightBumper())
                 .whileTrue(mDrivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        mControls
+        controllers.mControls
                 .x()
-                .and(mControls.rightBumper())
+                .and(controllers.mControls.rightBumper())
                 .whileTrue(mDrivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        mControls
+        controllers.mControls
                 .y()
-                .and(mControls.rightBumper())
+                .and(controllers.mControls.rightBumper())
                 .whileTrue(mDrivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-        mControls
+        controllers.mControls
                 .a()
-                .and(mControls.leftBumper())
+                .and(controllers.mControls.leftBumper())
                 .whileTrue(mDrivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        mControls
+        controllers.mControls
                 .b()
-                .and(mControls.leftBumper())
+                .and(controllers.mControls.leftBumper())
                 .whileTrue(mDrivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        mControls
+        controllers.mControls
                 .x()
-                .and(mControls.leftBumper())
+                .and(controllers.mControls.leftBumper())
                 .whileTrue(mDrivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        mControls
+        controllers.mControls
                 .y()
-                .and(mControls.leftBumper())
+                .and(controllers.mControls.leftBumper())
                 .whileTrue(mDrivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     }
 
