@@ -18,7 +18,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.math.proto.Kinematics;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
@@ -80,8 +79,8 @@ public class Drivetrain extends SubsystemBase {
           new SysIdRoutine.Config(),
           new SysIdRoutine.Mechanism(
               (Measure<Voltage> volts) -> {
-                leftFront.set(volts.in(Volts)/RobotController.getBatteryVoltage());
-                rightFront.set(volts.in(Volts)/RobotController.getBatteryVoltage());
+                leftFront.setVoltage(volts.in(Volts)/RobotController.getBatteryVoltage());
+                rightFront.setVoltage(volts.in(Volts)/RobotController.getBatteryVoltage());
               },
               log -> {
                 log.motor("drive-left")                    .voltage(
@@ -169,16 +168,12 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic(){
-    SmartDashboard.putNumber("Encoder Left FRONT Position", encoderLeftFront.getPosition());
-    SmartDashboard.putNumber("Encoder Right FRONT Position", encoderRightFront.getPosition());
-    SmartDashboard.putNumber("Encoder Left REAR Position", encoderLeftRear.getPosition());
-    SmartDashboard.putNumber("Encoder Right REAR Position", encoderRightRear.getPosition());
-    SmartDashboard.putNumber("ABS Encoder Left VELOCITY", driveEncoderLeft.getRate());
-    SmartDashboard.putNumber("ABS Encoder Right VELOCITY", driveEncoderRight.getRate());
-    SmartDashboard.putNumber("ABS LEFT ENC", driveEncoderLeft.getDistance());
-    SmartDashboard.putNumber("ABS Right ENC", driveEncoderRight.getDistance());
-
+    SmartDashboard.putNumber("VELOCITY LEFT", driveEncoderLeft.getRate());
+    SmartDashboard.putNumber("VELOCITY RIGHT", driveEncoderRight.getRate());
+    SmartDashboard.putNumber("LEFT POSITION", driveEncoderLeft.getDistance());
+    SmartDashboard.putNumber("RIGHT POSITION", driveEncoderRight.getDistance());
     SmartDashboard.putNumber("Gyro", gyro.getAngle());
+    
     odometry.update(gyro.getRotation2d(), driveEncoderLeft.getDistance(), driveEncoderRight.getDistance());
   }
 
