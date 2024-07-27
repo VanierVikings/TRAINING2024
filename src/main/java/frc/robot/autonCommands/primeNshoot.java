@@ -2,9 +2,7 @@ package frc.robot.autonCommands;
 
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.ShooterConstants;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 
 

@@ -136,6 +136,7 @@ public class RobotContainer {
                 .whileTrue(
                         new hangRetract(mHang, -HangConstants.speed));
         
+        /*
         controllers.mControls
         .a()
         .and(controllers.mControls.rightBumper())
@@ -169,6 +170,7 @@ public class RobotContainer {
                 .y()
                 .and(controllers.mControls.leftBumper())
                 .whileTrue(mDrivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+                */
     }
 
     public Command getAutonomousCommand() {
