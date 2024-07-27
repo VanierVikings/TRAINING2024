@@ -32,7 +32,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import org.opencv.*;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
 import frc.robot.Constants.DriverConstants;
+import frc.robot.Constants.cameraConstants;
 
 import static edu.wpi.first.units.MutableMeasure.mutable;
 import static edu.wpi.first.units.Units.Meters;
@@ -50,6 +54,7 @@ public class Drivetrain extends SubsystemBase {
   private final CANSparkBase rightRear = new CANSparkMax(DriverConstants.rightRearId, MotorType.kBrushless);
   private final CANSparkBase rightFront = new CANSparkMax(DriverConstants.rightFrontId, MotorType.kBrushless);
   private final DifferentialDrive drivetrain = new DifferentialDrive(leftFront, rightFront);
+  private PhotonCamera cam = new PhotonCamera(cameraConstants.kCamName);
 
   private final RelativeEncoder encoderLeftFront = leftFront.getEncoder(SparkRelativeEncoder.Type.kHallSensor, 42);
   private final RelativeEncoder encoderRightFront = rightFront.getEncoder(SparkRelativeEncoder.Type.kHallSensor, 42);
@@ -84,7 +89,8 @@ public class Drivetrain extends SubsystemBase {
                 rightFront.set(volts.in(Volts)/RobotController.getBatteryVoltage());
               },
               log -> {
-                log.motor("drive-left")                    .voltage(
+                log.motor("drive-left")                    
+                  .voltage(
                         m_appliedVoltage.mut_replace(
                             leftFront.getAppliedOutput() * leftFront.getBusVoltage(), Volts))
                     .linearPosition(m_distance.mut_replace(driveEncoderLeft.getDistance(), Meters))

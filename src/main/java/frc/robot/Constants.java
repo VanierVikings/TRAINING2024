@@ -33,6 +33,10 @@ public final class Constants {
     public static final int controlsPort = 0;
   }
 
+  public static class cameraConstants{
+    public static final String kCamName = "front Camera";
+  }
+
   public static class IntakeConstants{
     public static final int intakeFeedId = 7;
     public static final int rightIntakeId = 8;
