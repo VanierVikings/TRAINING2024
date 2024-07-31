@@ -13,26 +13,17 @@ import com.revrobotics.SparkRelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Distance;
@@ -91,8 +82,6 @@ public class Drivetrain extends SubsystemBase {
   private final PIDController m_rightPIDController = new PIDController(DriverConstants.kPR, DriverConstants.kI, DriverConstants.kD);
  
   private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(DriverConstants.kS, DriverConstants.kV, DriverConstants.kA);
-
-  private final DifferentialDriveOdometry odometry;
 
   private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(DriverConstants.trackWidth);
 
@@ -171,13 +160,10 @@ public class Drivetrain extends SubsystemBase {
 
     driveEncoderLeft.setDistancePerPulse(DriverConstants.distancePerPulse);
     driveEncoderRight.setDistancePerPulse(DriverConstants.distancePerPulse);
-    
-    odometry = new DifferentialDriveOdometry(
-    gyro.getRotation2d(), driveEncoderLeft.getDistance(), driveEncoderRight.getDistance());
 
     AutoBuilder.configureLTV(
       this::getPose, // Robot pose supplierz` 
-      this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+      this::resetPose, // Method to reset m_poseEstimator (will be called if your auto has a starting pose)
       this::giveCurrentSpeeds, // Current ChassisSpeeds supplier
       this::chassisDrive, // Method that will drive the robot given ChassisSpeeds
       0.02, // Robot control loop period in seconds. Default is 0.02
@@ -205,18 +191,14 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic(){
-    SmartDashboard.putNumber("Encoder Left FRONT Position", encoderLeftFront.getPosition());
-    SmartDashboard.putNumber("Encoder Right FRONT Position", encoderRightFront.getPosition());
-    SmartDashboard.putNumber("Encoder Left REAR Position", encoderLeftRear.getPosition());
-    SmartDashboard.putNumber("Encoder Right REAR Position", encoderRightRear.getPosition());
-    SmartDashboard.putNumber("ABS Encoder Left VELOCITY", driveEncoderLeft.getRate());
-    SmartDashboard.putNumber("ABS Encoder Right VELOCITY", driveEncoderRight.getRate());
-    SmartDashboard.putNumber("ABS LEFT ENC", driveEncoderLeft.getDistance());
-    SmartDashboard.putNumber("ABS Right ENC", driveEncoderRight.getDistance());
+    SmartDashboard.putNumber("LEFT VELOCICTY", driveEncoderLeft.getRate());
+    SmartDashboard.putNumber("RIGHT VELOCITY", driveEncoderRight.getRate());
+    SmartDashboard.putNumber("LEFT DISTANCE", driveEncoderLeft.getDistance());
+    SmartDashboard.putNumber("RIGHT DISTANCE", driveEncoderRight.getDistance());
 
     SmartDashboard.putNumber("Gyro", gyro.getAngle());
 
-    odometry.update(gyro.getRotation2d(), driveEncoderLeft.getDistance(), driveEncoderRight.getDistance());
+    m_poseEstimator.update(gyro.getRotation2d(), driveEncoderLeft.getDistance(), driveEncoderRight.getDistance());
     m_poseEstimator.update(gyro.getRotation2d(), driveEncoderLeft.getDistance(), driveEncoderRight.getDistance());
 
     aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
@@ -243,7 +225,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public Pose2d getPose() {
-    return odometry.getPoseMeters();
+    return m_poseEstimator.getEstimatedPosition();
   }
 
   public void resetGyro() {
@@ -253,7 +235,7 @@ public class Drivetrain extends SubsystemBase {
   public void resetPose(Pose2d pose) {
     gyro.reset();
     gyro.setAngleAdjustment(pose.getRotation().getDegrees());
-    odometry.resetPosition(
+    m_poseEstimator.resetPosition(
         gyro.getRotation2d(), driveEncoderLeft.getDistance(), driveEncoderRight.getDistance(), pose);
   }
 
