@@ -5,11 +5,11 @@ import frc.robot.subsystems.Hang;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
-public class hangRetract extends Command{
+public class HangRetract extends Command{
   Hang mHang;
   double hangSpeed;
   
-    public hangRetract(Hang hang, double speed){
+    public HangRetract(Hang hang, double speed){
         mHang = hang;
         hangSpeed = speed;
         setName("hangRetract");

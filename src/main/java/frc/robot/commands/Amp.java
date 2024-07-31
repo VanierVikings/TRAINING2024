@@ -7,11 +7,11 @@ import frc.robot.Constants.ShooterConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
-public class ampShoot extends Command{
+public class Amp extends Command{
     Shooter mShooter;
     Intake mIntake;
 
-    public ampShoot(Shooter shooter, Intake intake){
+    public Amp(Shooter shooter, Intake intake){
       mShooter = shooter;
       mIntake = intake;
       setName("pointAndShoot");

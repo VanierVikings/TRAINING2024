@@ -162,31 +162,26 @@ public class Drivetrain extends SubsystemBase {
     driveEncoderRight.setDistancePerPulse(DriverConstants.distancePerPulse);
 
     AutoBuilder.configureLTV(
-      this::getPose, // Robot pose supplierz` 
-      this::resetPose, // Method to reset m_poseEstimator (will be called if your auto has a starting pose)
-      this::giveCurrentSpeeds, // Current ChassisSpeeds supplier
-      this::chassisDrive, // Method that will drive the robot given ChassisSpeeds
-      0.02, // Robot control loop period in seconds. Default is 0.02
-      new ReplanningConfig(), // Default path replanning config. See the API for the options here
+      this::getPose,
+      this::resetPose,
+      this::giveCurrentSpeeds,
+      this::chassisDrive,
+      0.02,
+      new ReplanningConfig(),
       () -> {
-        // Boolean supplier that controls when the path will be mirrored for the red alliance
-        // This will flip the path being followed to the red side of the field.
-        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
         var alliance = DriverStation.getAlliance();
         if (alliance.isPresent()) {
           return alliance.get() == DriverStation.Alliance.Red;
         }
         return false;
       },
-      this // Reference to this subsystem to set requirements
+      this
 );
   } 
 
   public void drive(double left, double right){
     drivetrain.tankDrive(left, right, true);
   }
-
 
 
   @Override

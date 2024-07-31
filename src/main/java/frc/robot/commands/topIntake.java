@@ -5,10 +5,10 @@ import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
-public class topIntake extends Command{
+public class TopIntake extends Command{
     Shooter mShooter;
 
-    public topIntake(Shooter shooter){
+    public TopIntake(Shooter shooter){
       mShooter = shooter;
       setName("topIntake");
       addRequirements(shooter);
