@@ -11,19 +11,38 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkRelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.proto.Kinematics;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
@@ -31,9 +50,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import org.opencv.*;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import frc.robot.Constants.DriverConstants;
 import frc.robot.Constants.cameraConstants;
 
@@ -41,6 +64,9 @@ import static edu.wpi.first.units.MutableMeasure.mutable;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
+
+import java.util.List;
+import java.util.Optional;
 
 import edu.wpi.first.wpilibj.Encoder;
 
@@ -54,6 +80,20 @@ public class Drivetrain extends SubsystemBase {
   private final CANSparkBase rightFront = new CANSparkMax(DriverConstants.rightFrontId, MotorType.kBrushless);
   private final DifferentialDrive drivetrain = new DifferentialDrive(leftFront, rightFront);
   private PhotonCamera cam = new PhotonCamera(cameraConstants.kCamName);
+  private boolean hasTargets;
+  private PhotonPipelineResult result;
+  private PhotonTrackedTarget target;
+  private int targetID;
+  private double poseAmbiguity;
+  private Transform3d bestCameraToTarget;
+  private Transform3d alternateCameraToTarget;
+  private AprilTagFieldLayout aprilTagFieldLayout;
+  private Transform3d cameraToRobot;
+  private Transform3d robotToCam;
+  private PhotonPoseEstimator photonPoseEstimator;
+  private Pose2d botPose;
+  private double photonTimestamp;
+  
 
   private final RelativeEncoder encoderLeftFront = leftFront.getEncoder(SparkRelativeEncoder.Type.kHallSensor, 42);
   private final RelativeEncoder encoderRightFront = rightFront.getEncoder(SparkRelativeEncoder.Type.kHallSensor, 42);
@@ -78,14 +118,24 @@ public class Drivetrain extends SubsystemBase {
   private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
   private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
   private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+  private final DifferentialDrivePoseEstimator m_poseEstimator =
+  new DifferentialDrivePoseEstimator(
+      kinematics,
+      gyro.getRotation2d(),
+      driveEncoderLeft.getDistance(),
+      driveEncoderRight.getDistance(),
+      new Pose2d(),
+      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+      VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
+  
 
   private final SysIdRoutine m_sysIdRoutine =
       new SysIdRoutine(
           new SysIdRoutine.Config(),
           new SysIdRoutine.Mechanism(
               (Measure<Voltage> volts) -> {
-                leftFront.setVoltage(volts.in(Volts)/RobotController.getBatteryVoltage());
-                rightFront.setVoltage(volts.in(Volts)/RobotController.getBatteryVoltage());
+                leftFront.set(volts.in(Volts)/RobotController.getBatteryVoltage());
+                rightFront.set(volts.in(Volts)/RobotController.getBatteryVoltage());
               },
               log -> {
                 log.motor("drive-left")                    
@@ -174,17 +224,39 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic(){
-    SmartDashboard.putNumber("VELOCITY LEFT", driveEncoderLeft.getRate());
-    SmartDashboard.putNumber("VELOCITY RIGHT", driveEncoderRight.getRate());
-    SmartDashboard.putNumber("LEFT POSITION", driveEncoderLeft.getDistance());
-    SmartDashboard.putNumber("RIGHT POSITION", driveEncoderRight.getDistance());
+    SmartDashboard.putNumber("Encoder Left FRONT Position", encoderLeftFront.getPosition());
+    SmartDashboard.putNumber("Encoder Right FRONT Position", encoderRightFront.getPosition());
+    SmartDashboard.putNumber("Encoder Left REAR Position", encoderLeftRear.getPosition());
+    SmartDashboard.putNumber("Encoder Right REAR Position", encoderRightRear.getPosition());
+    SmartDashboard.putNumber("ABS Encoder Left VELOCITY", driveEncoderLeft.getRate());
+    SmartDashboard.putNumber("ABS Encoder Right VELOCITY", driveEncoderRight.getRate());
+    SmartDashboard.putNumber("ABS LEFT ENC", driveEncoderLeft.getDistance());
+    SmartDashboard.putNumber("ABS Right ENC", driveEncoderRight.getDistance());
+
     SmartDashboard.putNumber("Gyro", gyro.getAngle());
-    
     odometry.update(gyro.getRotation2d(), driveEncoderLeft.getDistance(), driveEncoderRight.getDistance());
+    m_poseEstimator.update(gyro.getRotation2d(), driveEncoderLeft.getDistance(), driveEncoderRight.getDistance());
+    result = cam.getLatestResult();
+    hasTargets = result.hasTargets();
+    target = result.getBestTarget();
+    targetID = target.getFiducialId();
+    poseAmbiguity = target.getPoseAmbiguity();
+    bestCameraToTarget = target.getBestCameraToTarget();
+    alternateCameraToTarget = target.getAlternateCameraToTarget();
+    aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+    cameraToRobot = new Transform3d(new Translation3d(0.3937, 0.0, 0.1), new Rotation3d(0,0,0));
+    robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0), new Rotation3d(0,10,0)); 
+    photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, cam, robotToCam);
+    var visionEST = photonPoseEstimator.update();
+    visionEST.ifPresent(
+      est -> {
+        m_poseEstimator.addVisionMeasurement(
+          est.estimatedPose.toPose2d(), est.timestampSeconds);
+      });
   }
 
 
-  public ChassisSpeeds giveCurrentSpeeds() {
+  public ChassisSpeeds giveCurrentSpeeds()  {
     var wheelSpeeds = new DifferentialDriveWheelSpeeds(driveEncoderLeft.getRate(), driveEncoderRight.getRate());
     ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(wheelSpeeds);
     return chassisSpeeds;
