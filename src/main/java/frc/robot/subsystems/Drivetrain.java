@@ -261,10 +261,8 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void rotate(double angle) {
-    // arade implementation
-    double angleFeedforward = m_feedforward.calculate(angle);
     double rotationalOutput = m_roationalPIDController.calculate(getHeading(), angle);
-    drivetrain.arcadeDrive(0, rotationalOutput + angleFeedforward);
+    drivetrain.arcadeDrive(0, rotationalOutput);
   }
 
   public void chassisDrive(ChassisSpeeds speed) {

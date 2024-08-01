@@ -31,6 +31,7 @@ public class SpeakerAlign extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    m_drivetrain.stop();
   }
 
   @Override
