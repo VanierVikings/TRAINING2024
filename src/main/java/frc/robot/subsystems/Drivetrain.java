@@ -243,8 +243,8 @@ public class Drivetrain extends SubsystemBase {
     double leftOutput = m_leftPIDController.calculate(driveEncoderLeft.getRate(), speeds.leftMetersPerSecond);
     double rightOutput = m_rightPIDController.calculate(driveEncoderRight.getRate(), speeds.rightMetersPerSecond);
 
-    leftFront.setVoltage(-(leftOutput + leftFeedforward / RobotController.getBatteryVoltage()));
-    rightFront.setVoltage(-(rightOutput + rightFeedforward / RobotController.getBatteryVoltage()));
+    leftFront.setVoltage(-(leftOutput + leftFeedforward));
+    rightFront.setVoltage(-(rightOutput + rightFeedforward));
   }
 
   public void speakerAlign() {
@@ -252,6 +252,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void rotate(double angle){
+    //arade implementation
     double angleFeedforward = m_feedforward.calculate(angle);
     double rotationalOutput = m_roationalPIDController.calculate(getHeading(), angle);
     drivetrain.arcadeDrive(0, rotationalOutput + angleFeedforward);
