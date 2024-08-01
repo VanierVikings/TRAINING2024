@@ -34,7 +34,6 @@ import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -51,6 +50,9 @@ import static edu.wpi.first.units.MutableMeasure.mutable;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.wpi.first.wpilibj.Encoder;
 
@@ -164,7 +166,7 @@ public class Drivetrain extends SubsystemBase {
     driveEncoderLeft.setDistancePerPulse(DriverConstants.distancePerPulse);
     driveEncoderRight.setDistancePerPulse(DriverConstants.distancePerPulse);
 
-    m_roationalPIDController.enableContinuousInput(0, 360);
+    m_roationalPIDController.enableContinuousInput(180, 180);
 
     AutoBuilder.configureLTV(
         this::getPose,
@@ -200,8 +202,6 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putData("Gyro", gyro);
 
     m_poseEstimator.update(gyro.getRotation2d(), driveEncoderLeft.getDistance(), driveEncoderRight.getDistance());
-
-    Shuffleboard.update();
 
     var visionEST = photonPoseEstimator.update();
     visionEST.ifPresent(
@@ -247,12 +247,21 @@ public class Drivetrain extends SubsystemBase {
     rightFront.setVoltage(-(rightOutput + rightFeedforward));
   }
 
-  public void speakerAlign() {
-    Pose2d speakerCenterBlue = new Pose2d(1.30, 5.56, Rotation2d.fromDegrees(0));
+  public Pose2d nearestAutoAlign() {
+    List<Pose2d> poses = new ArrayList<Pose2d>();
+    Pose2d speakerCenter = new Pose2d(1.30, 5.56, Rotation2d.fromDegrees(0));
+    Pose2d speakerAmp = new Pose2d(0.74, 6.59, Rotation2d.fromDegrees(64));
+    Pose2d speakerSource = new Pose2d(0.74, 4.49, Rotation2d.fromDegrees(-64.00));
+
+    poses.add(speakerCenter);
+    poses.add(speakerSource);
+    poses.add(speakerAmp);
+
+    return getPose().nearest(poses);
   }
 
-  public void rotate(double angle){
-    //arade implementation
+  public void rotate(double angle) {
+    // arade implementation
     double angleFeedforward = m_feedforward.calculate(angle);
     double rotationalOutput = m_roationalPIDController.calculate(getHeading(), angle);
     drivetrain.arcadeDrive(0, rotationalOutput + angleFeedforward);
