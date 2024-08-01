@@ -1,0 +1,67 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.7,
+        "y": 4.09635924946192
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.5819660112501053,
+        "y": 4.09635924946192
+      },
+      "isLocked": false,
+      "linkedName": "Note 3"
+    },
+    {
+      "anchor": {
+        "x": 0.74,
+        "y": 4.49
+      },
+      "prevControl": {
+        "x": 1.4066268965131155,
+        "y": 3.123212313179076
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Speaker Start Source Side"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Prime",
+      "waypointRelativePos": 0.05,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Prime"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.4,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": true,
+  "folder": "Source Side",
+  "previewStartingState": null,
+  "useDefaultConstraints": true
+}
