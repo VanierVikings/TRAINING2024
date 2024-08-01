@@ -20,6 +20,7 @@ public class Amp extends Command{
 
     @Override
     public void initialize() {
+      m_shooter.set(ShooterConstants.ampSpeed);
       m_intake.setFeeder(ShooterConstants.primeSpeed);
     }
 

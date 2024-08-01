@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.HangConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Amp;
 import frc.robot.commands.FloorIntake;
@@ -88,7 +88,6 @@ public class RobotContainer {
 
         // Amp Shoot
         controllers.mControls
-
                 .b()
                 .whileTrue(
                 new Amp(m_shooter, m_intake).withTimeout(0.5));
@@ -109,13 +108,13 @@ public class RobotContainer {
         controllers.mControls
                 .rightTrigger()
                 .whileTrue(
-                        new FloorIntake(m_intake, 1));
+                        new FloorIntake(m_intake, IntakeConstants.speed));
 
         // Floor Intake Reverse
         controllers.mControls
                 .rightBumper()
                 .whileTrue(
-                        new FloorIntake(m_intake, -1));
+                        new FloorIntake(m_intake, -IntakeConstants.speed));
 
         // Top Intake
         controllers.mControls

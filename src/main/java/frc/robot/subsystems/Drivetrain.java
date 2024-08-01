@@ -84,6 +84,8 @@ public class Drivetrain extends SubsystemBase {
       DriverConstants.kD);
   private final PIDController m_rightPIDController = new PIDController(DriverConstants.kP, DriverConstants.kI,
       DriverConstants.kD);
+  private final PIDController m_roationalPIDController = new PIDController(DriverConstants.kP, DriverConstants.kI,
+      DriverConstants.kD);
 
   private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(DriverConstants.kS,
       DriverConstants.kV, DriverConstants.kA);
@@ -162,6 +164,8 @@ public class Drivetrain extends SubsystemBase {
     driveEncoderLeft.setDistancePerPulse(DriverConstants.distancePerPulse);
     driveEncoderRight.setDistancePerPulse(DriverConstants.distancePerPulse);
 
+    m_roationalPIDController.enableContinuousInput(0, 360);
+
     AutoBuilder.configureLTV(
         this::getPose,
         this::resetPose,
@@ -233,17 +237,24 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
-    final double leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
-    final double rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
+    double leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
+    double rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
 
-    final double leftOutput = m_leftPIDController.calculate(driveEncoderLeft.getRate(), speeds.leftMetersPerSecond);
-    final double rightOutput = m_rightPIDController.calculate(driveEncoderRight.getRate(), speeds.rightMetersPerSecond);
+    double leftOutput = m_leftPIDController.calculate(driveEncoderLeft.getRate(), speeds.leftMetersPerSecond);
+    double rightOutput = m_rightPIDController.calculate(driveEncoderRight.getRate(), speeds.rightMetersPerSecond);
+
     leftFront.setVoltage(-(leftOutput + leftFeedforward / RobotController.getBatteryVoltage()));
     rightFront.setVoltage(-(rightOutput + rightFeedforward / RobotController.getBatteryVoltage()));
   }
 
   public void speakerAlign() {
-    new Pose2d(0, 0, new Rotation2d());
+    Pose2d speakerCenterBlue = new Pose2d(1.30, 5.56, Rotation2d.fromDegrees(0));
+  }
+
+  public void rotate(double angle){
+    double angleFeedforward = m_feedforward.calculate(angle);
+    double rotationalOutput = m_roationalPIDController.calculate(getHeading(), angle);
+    drivetrain.arcadeDrive(0, rotationalOutput + angleFeedforward);
   }
 
   public void chassisDrive(ChassisSpeeds speed) {

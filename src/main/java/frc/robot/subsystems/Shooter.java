@@ -48,9 +48,11 @@ public class Shooter extends SubsystemBase {
     public void set(double setpoint) {
         m_leftPIDController.reset();
         m_rightPIDController.reset();
+
         double feedforward = m_feedforward.calculate(setpoint);
         double leftOutput = m_leftPIDController.calculate(encoderLeft.getVelocity(), setpoint);
         double rightOutput = m_rightPIDController.calculate(encoderRight.getVelocity(), setpoint);
+        
         shooterPrimeLeft.setVoltage(leftOutput + feedforward);
         shooterPrimeRight.setVoltage(-(rightOutput + feedforward));
     }
