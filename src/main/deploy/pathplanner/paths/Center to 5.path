@@ -3,37 +3,53 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.28,
-        "y": 0.77
+        "x": 1.3,
+        "y": 5.56
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.1619660112501045,
-        "y": 0.7700000000000001
+        "x": 2.3,
+        "y": 5.56
       },
       "isLocked": false,
-      "linkedName": "Note 8"
+      "linkedName": "Speaker Start Center Side"
     },
     {
       "anchor": {
-        "x": 0.74,
-        "y": 4.49
+        "x": 4.947385609056933,
+        "y": 6.219202438404877
       },
       "prevControl": {
-        "x": 1.4066268965131157,
-        "y": 3.1232123131790765
+        "x": 3.7464019608701595,
+        "y": 6.162985635090955
+      },
+      "nextControl": {
+        "x": 6.148369257243706,
+        "y": 6.275419241718799
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.3,
+        "y": 5.78
+      },
+      "prevControl": {
+        "x": 7.044019225535557,
+        "y": 5.9565165864133895
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Speaker Start Source Side"
+      "linkedName": "Note 5"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Prime",
-      "waypointRelativePos": 0.35,
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.25,
       "command": {
         "type": "sequential",
         "data": {
@@ -41,7 +57,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Prime"
+                "name": "FloorIntake"
               }
             }
           ]
@@ -60,8 +76,11 @@
     "rotation": 0,
     "rotateFast": false
   },
-  "reversed": true,
-  "folder": "Source Side",
-  "previewStartingState": null,
+  "reversed": false,
+  "folder": "Center Side",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
   "useDefaultConstraints": true
 }
