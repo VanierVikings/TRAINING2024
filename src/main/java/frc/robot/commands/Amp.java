@@ -8,20 +8,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 
 public class Amp extends Command{
-    Shooter mShooter;
-    Intake mIntake;
+    private static Shooter m_shooter;
+    private static Intake m_intake;
 
-    public Amp(Shooter shooter, Intake intake){
-      mShooter = shooter;
-      mIntake = intake;
-      setName("pointAndShoot");
-      addRequirements(shooter);
+    public Amp(Shooter m_shooter, Intake m_intake){
+      Amp.m_shooter = m_shooter;
+      Amp.m_intake = m_intake;
+      setName("Amp");
+      addRequirements(m_shooter, m_intake);
     }
 
     @Override
     public void initialize() {
-      mShooter.changeTargetRPM(0.06);
-      mIntake.intakeFeed(ShooterConstants.primeSpeed);
+      m_intake.setFeeder(ShooterConstants.primeSpeed);
     }
 
     @Override
@@ -29,8 +28,8 @@ public class Amp extends Command{
   
     @Override
     public void end(boolean interrupted) {
-      mShooter.stop();
-      mIntake.intakeFeed(0);
+      m_shooter.stop();
+      m_intake.setFeeder(0);
     }
   
     @Override

@@ -18,13 +18,14 @@ public class FloorIntake extends Command {
 
   @Override
   public void initialize() {
-    m_intake.drive(direction * IntakeConstants.speed);
-    m_intake.intakeFeed(direction * IntakeConstants.speed);
+    m_intake.setIntake(direction * IntakeConstants.speed);
+    m_intake.setFeeder(direction * IntakeConstants.speed);
   }
 
   @Override
   public void end(boolean interrupted) {
-    m_intake.stop();
+    m_intake.stopIntake();
+    m_intake.stopFeeder();
   }
 
   @Override

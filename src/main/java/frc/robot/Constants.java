@@ -8,20 +8,18 @@ public final class Constants {
     public static final int leftFrontId = 2;
     public static final int rightRearId = 4;
     public static final int rightFrontId = 3;
-    public static final int currentLimit = 45;
+    public static final int currentLimit = 40;
     public static final int throughBoreCPR = 2048;
     public static final double trackWidth = 0.69;
-    public static final double autoSpeed = 0.35;
     public static final double wheelDiameter = Units.inchesToMeters(6);
     public static final double wheelCircumference = wheelDiameter * Math.PI;
     public static final double gearRatio = 8.46;
     public static final double positionConversionFactor = wheelCircumference / gearRatio;
     public static final double velocityConversionFactor = wheelCircumference / (gearRatio*60);
     public static final double distancePerPulse = wheelCircumference / throughBoreCPR;
-    public static final double kPL = 0.0001;
-    public static final double kPR = 0.0001;
-    public static final double kI = 0;
-    public static final double kD = 0;
+    public static final double kP = 0.01;
+    public static final double kI = 0.0001;
+    public static final double kD = 0.000001;
     public static final double kS = 0;
     public static final double kV = 2.16;
     public static final double kA = 0.60;
@@ -54,7 +52,15 @@ public final class Constants {
     public static final double feedSpeed = 1.0;
     public static final double topIntakeSpeed = 0.5;
     public static final double delay = 5;
-    public static final double shooterSpeed = 5000;
+    public static final double maxRPM = 5880;
+    public static final int currentLimit = 40;
+    public static final double kP = 1;
+    public static final double kI = 0.01;
+    public static final double kD = 0.00001;
+    public static final double kS = 0;
+    public static final double kV = 0.26;
+    public static final double kA = 0.14;
+    public static final double velocityTolerance = 50;
   }
 
   public static class HangConstants{

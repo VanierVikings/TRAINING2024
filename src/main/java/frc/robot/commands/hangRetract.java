@@ -6,24 +6,24 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 
 public class HangRetract extends Command{
-  Hang mHang;
-  double hangSpeed;
+  private static Hang m_hang;
+  double speed;
   
-    public HangRetract(Hang hang, double speed){
-        mHang = hang;
-        hangSpeed = speed;
-        setName("hangRetract");
-        addRequirements(hang);
+    public HangRetract(Hang m_hang, double speed){
+        HangRetract.m_hang = m_hang;
+        this.speed = speed;
+        setName("Hang Retract");
+        addRequirements(m_hang);
     }
 
     @Override
     public void initialize() {
-      mHang.drive(hangSpeed);
+      m_hang.set(speed);
     }
     
     @Override
     public void end(boolean interrupted) {
-      mHang.drive(0);
+      m_hang.set(0);
     }
   
     @Override

@@ -22,6 +22,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
@@ -33,6 +34,7 @@ import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -61,7 +63,7 @@ public class Drivetrain extends SubsystemBase {
   private final CANSparkBase rightRear = new CANSparkMax(DriverConstants.rightRearId, MotorType.kBrushless);
   private final CANSparkBase rightFront = new CANSparkMax(DriverConstants.rightFrontId, MotorType.kBrushless);
   private final DifferentialDrive drivetrain = new DifferentialDrive(leftFront, rightFront);
-  
+
   private PhotonCamera cam = new PhotonCamera(cameraConstants.kCamName);
   private AprilTagFieldLayout aprilTagFieldLayout;
   private Transform3d robotToCam;
@@ -78,18 +80,20 @@ public class Drivetrain extends SubsystemBase {
 
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
-  private final PIDController m_leftPIDController = new PIDController(DriverConstants.kPL, DriverConstants.kI, DriverConstants.kD);
-  private final PIDController m_rightPIDController = new PIDController(DriverConstants.kPR, DriverConstants.kI, DriverConstants.kD);
- 
-  private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(DriverConstants.kS, DriverConstants.kV, DriverConstants.kA);
+  private final PIDController m_leftPIDController = new PIDController(DriverConstants.kP, DriverConstants.kI,
+      DriverConstants.kD);
+  private final PIDController m_rightPIDController = new PIDController(DriverConstants.kP, DriverConstants.kI,
+      DriverConstants.kD);
+
+  private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(DriverConstants.kS,
+      DriverConstants.kV, DriverConstants.kA);
 
   private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(DriverConstants.trackWidth);
 
   private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
   private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
   private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
-  private final DifferentialDrivePoseEstimator m_poseEstimator =
-  new DifferentialDrivePoseEstimator(
+  private final DifferentialDrivePoseEstimator m_poseEstimator = new DifferentialDrivePoseEstimator(
       kinematics,
       gyro.getRotation2d(),
       driveEncoderLeft.getDistance(),
@@ -97,44 +101,41 @@ public class Drivetrain extends SubsystemBase {
       new Pose2d(),
       VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
       VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
-  
 
-  private final SysIdRoutine m_sysIdRoutine =
-      new SysIdRoutine(
-          new SysIdRoutine.Config(),
-          new SysIdRoutine.Mechanism(
-              (Measure<Voltage> volts) -> {
-                leftFront.set(volts.in(Volts)/RobotController.getBatteryVoltage());
-                rightFront.set(volts.in(Volts)/RobotController.getBatteryVoltage());
-              },
-              log -> {
-                log.motor("drive-left")                    
-                  .voltage(
-                        m_appliedVoltage.mut_replace(
-                            leftFront.getAppliedOutput() * leftFront.getBusVoltage(), Volts))
-                    .linearPosition(m_distance.mut_replace(driveEncoderLeft.getDistance(), Meters))
-                    .linearVelocity(
-                        m_velocity.mut_replace(driveEncoderLeft.getRate(), MetersPerSecond));
-                log.motor("drive-right")
-                    .voltage(
-                        m_appliedVoltage.mut_replace(
-                            rightFront.getAppliedOutput() * rightFront.getBusVoltage(), Volts))
-                    .linearPosition(m_distance.mut_replace(driveEncoderRight.getDistance(), Meters))
-                    .linearVelocity(
-                        m_velocity.mut_replace(driveEncoderRight.getRate(), MetersPerSecond));
-              },
-              this));
+  private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(),
+      new SysIdRoutine.Mechanism(
+          (Measure<Voltage> volts) -> {
+            leftFront.set(volts.in(Volts) / RobotController.getBatteryVoltage());
+            rightFront.set(volts.in(Volts) / RobotController.getBatteryVoltage());
+          },
+          log -> {
+            log.motor("drive-left")
+                .voltage(
+                    m_appliedVoltage.mut_replace(
+                        leftFront.getAppliedOutput() * leftFront.getBusVoltage(), Volts))
+                .linearPosition(m_distance.mut_replace(driveEncoderLeft.getDistance(), Meters))
+                .linearVelocity(
+                    m_velocity.mut_replace(driveEncoderLeft.getRate(), MetersPerSecond));
+            log.motor("drive-right")
+                .voltage(
+                    m_appliedVoltage.mut_replace(
+                        rightFront.getAppliedOutput() * rightFront.getBusVoltage(), Volts))
+                .linearPosition(m_distance.mut_replace(driveEncoderRight.getDistance(), Meters))
+                .linearVelocity(
+                    m_velocity.mut_replace(driveEncoderRight.getRate(), MetersPerSecond));
+          },
+          this));
 
   public Drivetrain() {
     resetEncoders();
     gyro.reset();
-    
+
     leftRear.follow(leftFront);
     rightRear.follow(rightFront);
 
     leftFront.setInverted(true);
     rightFront.setInverted(false);
-    
 
     leftFront.setSmartCurrentLimit(DriverConstants.currentLimit);
     leftRear.setSmartCurrentLimit(DriverConstants.currentLimit);
@@ -162,53 +163,51 @@ public class Drivetrain extends SubsystemBase {
     driveEncoderRight.setDistancePerPulse(DriverConstants.distancePerPulse);
 
     AutoBuilder.configureLTV(
-      this::getPose,
-      this::resetPose,
-      this::giveCurrentSpeeds,
-      this::chassisDrive,
-      0.02,
-      new ReplanningConfig(),
-      () -> {
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()) {
-          return alliance.get() == DriverStation.Alliance.Red;
-        }
-        return false;
-      },
-      this
-);
-  } 
+        this::getPose,
+        this::resetPose,
+        this::giveCurrentSpeeds,
+        this::chassisDrive,
+        0.02,
+        new ReplanningConfig(),
+        () -> {
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this);
 
-  public void drive(double left, double right){
+    aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+    robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0), new Rotation3d(0, 10, 0));
+    photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, cam,
+        robotToCam);
+  }
+
+  public void drive(double left, double right) {
     drivetrain.tankDrive(left, right, true);
   }
 
-
   @Override
-  public void periodic(){
-    SmartDashboard.putNumber("LEFT VELOCICTY", driveEncoderLeft.getRate());
-    SmartDashboard.putNumber("RIGHT VELOCITY", driveEncoderRight.getRate());
-    SmartDashboard.putNumber("LEFT DISTANCE", driveEncoderLeft.getDistance());
-    SmartDashboard.putNumber("RIGHT DISTANCE", driveEncoderRight.getDistance());
-
-    SmartDashboard.putNumber("Gyro", gyro.getAngle());
+  public void periodic() {
+    SmartDashboard.putData("LEFT ENCODER", driveEncoderLeft);
+    SmartDashboard.putData("RIGHT ENCODER", driveEncoderRight);
+    SmartDashboard.putData("Drivetrain", drivetrain);
+    SmartDashboard.putData("Gyro", gyro);
 
     m_poseEstimator.update(gyro.getRotation2d(), driveEncoderLeft.getDistance(), driveEncoderRight.getDistance());
-    m_poseEstimator.update(gyro.getRotation2d(), driveEncoderLeft.getDistance(), driveEncoderRight.getDistance());
 
-    aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-    robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0), new Rotation3d(0,10,0)); 
-    photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, cam, robotToCam);
+    Shuffleboard.update();
+
     var visionEST = photonPoseEstimator.update();
     visionEST.ifPresent(
-      est -> {
-        m_poseEstimator.addVisionMeasurement(
-          est.estimatedPose.toPose2d(), est.timestampSeconds);
-      });
+        est -> {
+          m_poseEstimator.addVisionMeasurement(
+              est.estimatedPose.toPose2d(), est.timestampSeconds);
+        });
   }
 
-
-  public ChassisSpeeds giveCurrentSpeeds()  {
+  public ChassisSpeeds giveCurrentSpeeds() {
     var wheelSpeeds = new DifferentialDriveWheelSpeeds(driveEncoderLeft.getRate(), driveEncoderRight.getRate());
     ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(wheelSpeeds);
     return chassisSpeeds;
@@ -226,27 +225,28 @@ public class Drivetrain extends SubsystemBase {
   public void resetGyro() {
     gyro.reset();
   }
- 
+
   public void resetPose(Pose2d pose) {
-    gyro.reset();
     gyro.setAngleAdjustment(pose.getRotation().getDegrees());
     m_poseEstimator.resetPosition(
         gyro.getRotation2d(), driveEncoderLeft.getDistance(), driveEncoderRight.getDistance(), pose);
   }
 
   public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
-    final double leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond); 
+    final double leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
     final double rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
 
-    final double leftOutput =
-        m_leftPIDController.calculate(driveEncoderLeft.getRate(), speeds.leftMetersPerSecond);
-    final double rightOutput =
-        m_rightPIDController.calculate(driveEncoderRight.getRate(), speeds.rightMetersPerSecond);
-    leftFront.setVoltage(-(leftOutput + leftFeedforward/RobotController.getBatteryVoltage()));
-    rightFront.setVoltage(-(rightOutput + rightFeedforward/RobotController.getBatteryVoltage()));
+    final double leftOutput = m_leftPIDController.calculate(driveEncoderLeft.getRate(), speeds.leftMetersPerSecond);
+    final double rightOutput = m_rightPIDController.calculate(driveEncoderRight.getRate(), speeds.rightMetersPerSecond);
+    leftFront.setVoltage(-(leftOutput + leftFeedforward / RobotController.getBatteryVoltage()));
+    rightFront.setVoltage(-(rightOutput + rightFeedforward / RobotController.getBatteryVoltage()));
   }
 
-  public void chassisDrive(ChassisSpeeds speed){
+  public void speakerAlign() {
+    new Pose2d(0, 0, new Rotation2d());
+  }
+
+  public void chassisDrive(ChassisSpeeds speed) {
     setSpeeds(kinematics.toWheelSpeeds(speed));
   }
 
@@ -254,7 +254,6 @@ public class Drivetrain extends SubsystemBase {
     return new DifferentialDriveWheelSpeeds(driveEncoderLeft.getRate(), driveEncoderRight.getRate());
   }
 
-  
   public void setMaxOutput(double maxOutput) {
     drivetrain.setMaxOutput(maxOutput);
   }

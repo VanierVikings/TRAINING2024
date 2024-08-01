@@ -19,18 +19,21 @@ public class Intake extends SubsystemBase {
         intakeFeed.setInverted(true);
     }
 
-    public void drive(double speed){
+    public void setIntake(double speed){
         intakeRight.set(VictorSPXControlMode.PercentOutput, -speed);
         intakeLeft.set(TalonSRXControlMode.PercentOutput, speed);
     }
 
-    public void intakeFeed(double speed){
+    public void setFeeder(double speed){
         intakeFeed.set(VictorSPXControlMode.PercentOutput, -speed);
     }
 
-    public void stop() {
+    public void stopIntake() {
         intakeLeft.set(TalonSRXControlMode.PercentOutput, 0);
         intakeRight.set(VictorSPXControlMode.PercentOutput, 0);
+    }
+    
+    public void stopFeeder() {
         intakeFeed.set(VictorSPXControlMode.PercentOutput, 0);
     }
 }

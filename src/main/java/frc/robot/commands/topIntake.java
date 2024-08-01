@@ -6,12 +6,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 
 public class TopIntake extends Command{
-    Shooter mShooter;
+    private static Shooter m_shooter;
 
-    public TopIntake(Shooter shooter){
-      mShooter = shooter;
-      setName("topIntake");
-      addRequirements(shooter);
+    public TopIntake(Shooter m_shooter){
+      TopIntake.m_shooter = m_shooter;
+      setName("Top Intake");
+      addRequirements(m_shooter);
     }
 
     @Override
@@ -20,7 +20,7 @@ public class TopIntake extends Command{
 
     @Override
     public void end(boolean interrupted) {
-      mShooter.stop();
+      m_shooter.stop();
     }
 
     @Override

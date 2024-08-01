@@ -1,39 +1,31 @@
 package frc.robot.commands;
 
-import frc.robot.subsystems.Shooter;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.ShooterConstants;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import frc.robot.subsystems.Shooter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
 public class Prime extends Command{
-    Shooter mShooter;
+    private static Shooter m_shooter;
 
-    public Prime(Shooter shooter){
-      mShooter = shooter;
-      setName("prime");
-      addRequirements(shooter);
+    public Prime(Shooter m_shooter){
+      Prime.m_shooter = m_shooter;
+      setName("Prime");
+      addRequirements(m_shooter);
     }
 
     @Override
     public void initialize() {
-      mShooter.RPMtarget(ShooterConstants.shooterSpeed, ShooterConstants.shooterSpeed);
-      if (mShooter.reachedTargetRPM(ShooterConstants.shooterSpeed)){
-          RobotContainer.controllers.mControls.getHID().setRumble(RumbleType.kBothRumble, 0.3);;
-      }
-      else{
-        RobotContainer.controllers.mControls.getHID().setRumble(RumbleType.kBothRumble, 0);
-      }
+      m_shooter.set(ShooterConstants.maxRPM);
     }
 
     @Override 
-    public void execute(){
-    }
+    public void execute(){}
 
     @Override
     public void end(boolean interrupted) {
-      mShooter.stop();
+      m_shooter.stop();
     }
   
     @Override

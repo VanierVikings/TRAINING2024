@@ -21,7 +21,7 @@ public class Hang extends SubsystemBase {
         SmartDashboard.putNumber("Hang Encoder", encoder.getPosition());
     }
 
-    public void drive(double speed) {
+    public void set(double speed) {
         hookMotor.set(speed);
     }
 
