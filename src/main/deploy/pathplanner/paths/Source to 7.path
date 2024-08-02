@@ -1,0 +1,83 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.74,
+        "y": 4.49
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.230113841797458,
+        "y": 3.4851177073514847
+      },
+      "isLocked": false,
+      "linkedName": "Speaker Start Source Side"
+    },
+    {
+      "anchor": {
+        "x": 5.5504858734498175,
+        "y": 1.761104219165675
+      },
+      "prevControl": {
+        "x": 4.088324751885413,
+        "y": 1.7478363184045034
+      },
+      "nextControl": {
+        "x": 6.897264732029464,
+        "y": 1.7733251214857697
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.289526600983027,
+        "y": 2.451850872040561
+      },
+      "prevControl": {
+        "x": 6.896096533892542,
+        "y": 1.86037490041139
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Note 7"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 1.45,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "FloorIntake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.4,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Source Side",
+  "previewStartingState": null,
+  "useDefaultConstraints": true
+}

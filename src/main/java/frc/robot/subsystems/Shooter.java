@@ -10,9 +10,12 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.RobotContainer;
 
 public class Shooter extends SubsystemBase {
     private final CANSparkBase shooterPrimeRight = new CANSparkMax(ShooterConstants.shooterPrimeRightId,
@@ -72,6 +75,12 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (atSetpoint() && !DriverStation.isAutonomous()){
+            RobotContainer.controllers.mControls.getHID().setRumble(RumbleType.kBothRumble, 0.3);
+        }
+        else {
+            RobotContainer.controllers.mControls.getHID().setRumble(RumbleType.kBothRumble, 0);
+        }
         SmartDashboard.putBoolean("At Max RPM?", atSetpoint());
     }
 }

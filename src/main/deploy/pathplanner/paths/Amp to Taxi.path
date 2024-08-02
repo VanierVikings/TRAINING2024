@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7220452902444284,
-        "y": 4.4795920361071495
+        "x": 0.74,
+        "y": 6.592
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.970496437079314,
-        "y": 3.8776990721557314
+        "x": 1.230113841797458,
+        "y": 7.596882292648515
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Speaker Start Amp Side"
     },
     {
       "anchor": {
-        "x": 3.7215959047302727,
-        "y": 6.798323596647194
+        "x": 2.96188622462223,
+        "y": 7.373686445563681
       },
       "prevControl": {
-        "x": 3.214239278892393,
-        "y": 6.798323596647194
+        "x": 1.4411955920476789,
+        "y": 7.373686445563681
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,21 +32,18 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.5,
+    "maxAcceleration": 4.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 6.0,
     "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
-  "previewStartingState": {
-    "rotation": 0,
-    "velocity": 0
-  },
-  "useDefaultConstraints": true
+  "folder": "Amp Side",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
 }

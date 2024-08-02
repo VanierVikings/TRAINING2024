@@ -6,7 +6,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class SpeakerAlign extends Command {
@@ -20,29 +19,16 @@ public class SpeakerAlign extends Command {
 
   @Override
   public void initialize() {
-    Pose2d prealignmnent = m_drivetrain.nearestAutoAlign(m_drivetrain.posesPreAlignment);
-
-    double rotationAngle = m_drivetrain.alignmentAngle(prealignmnent, m_drivetrain.getPose());
-    int index = m_drivetrain.posesPreAlignment.indexOf(prealignmnent);
-
-    m_drivetrain.rotate(rotationAngle);
-    SmartDashboard.putNumber("To Speaker Angle", rotationAngle);
-    SmartDashboard.putNumber("Alignment Index", index);
-
+    Pose2d target = m_drivetrain.nearestAutoAlign();
+    m_drivetrain.rotate(target.getRotation().getDegrees());
     PathConstraints constraints = new PathConstraints(3.0, 4.0, 0, 0);
-    AutoBuilder.pathfindToPose(prealignmnent, constraints, 0.0, 0.0);
-
-    Pose2d aligned = m_drivetrain.posesAligned.get(index);
-
-    m_drivetrain.rotate(aligned.getRotation().getDegrees());
-
-    constraints = new PathConstraints(0.5, 0.5, 0, 0);
-    AutoBuilder.pathfindToPose(aligned, constraints, 0.0, 0.0);
+    AutoBuilder.pathfindToPose(target, constraints, 0.0, 0.0);
   }
 
   @Override
   public void execute() {
   }
+
 
   @Override
   public void end(boolean interrupted) {
