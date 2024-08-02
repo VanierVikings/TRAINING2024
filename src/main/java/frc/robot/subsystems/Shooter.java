@@ -55,7 +55,7 @@ public class Shooter extends SubsystemBase {
         
         shooterPrimeLeft.setVoltage(leftOutput + feedforward);
         shooterPrimeRight.setVoltage(-(rightOutput + feedforward));
-    }
+    }   
 
     public boolean atSetpoint() {
         return m_leftPIDController.atSetpoint() && m_rightPIDController.atSetpoint();
