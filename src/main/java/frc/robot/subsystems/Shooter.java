@@ -75,6 +75,7 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Shooter Encoder", encoderLeft.getVelocity());
         if (atSetpoint() && !DriverStation.isAutonomous()){
             RobotContainer.controllers.mControls.getHID().setRumble(RumbleType.kBothRumble, 0.3);
         }

@@ -11,7 +11,7 @@ public class FloorIntake extends Command {
   public FloorIntake(Intake m_intake, double speed) {
     FloorIntake.m_intake = m_intake;
     FloorIntake.speed = speed;
-    setName("Floor Intake");
+    setName("FloorIntake");
     addRequirements(m_intake);
   }
 
