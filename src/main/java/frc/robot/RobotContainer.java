@@ -18,6 +18,7 @@ import frc.robot.commands.FloorIntake;
 import frc.robot.commands.HangRetract;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.Prime;
+import frc.robot.commands.Rotate;
 import frc.robot.commands.TopIntake;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hang;
@@ -39,7 +40,6 @@ public class RobotContainer {
 
         public RobotContainer() {
         field = new Field2d();
-        //SmartDashboard.putData("Field", field);
 
         // Logging callback for current robot pose
         PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
@@ -84,7 +84,7 @@ public class RobotContainer {
         //Tank Drive (2 controllers)            
         m_drivetrain.setDefaultCommand(new RunCommand(
                 () -> m_drivetrain.drive(controllers.mDriver.getLeftY(), controllers.mDriver.getRightY()),
-                m_drivetrain));
+                m_drivetrain));        
 
         // Amp Shoot
         controllers.mControls
@@ -133,6 +133,9 @@ public class RobotContainer {
                 .y()
                 .whileTrue(
                         new HangRetract(m_hang, -HangConstants.speed));
+
+        controllers.mDriver
+                .b().onTrue(new Rotate(m_drivetrain, 90));
         
         /*
         controllers.mControls

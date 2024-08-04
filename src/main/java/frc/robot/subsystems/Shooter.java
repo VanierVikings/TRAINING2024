@@ -53,6 +53,7 @@ public class Shooter extends SubsystemBase {
         m_rightPIDController.reset();
 
         double feedforward = m_feedforward.calculate(setpoint);
+        m_leftPIDController.setSetpoint(setpoint);
         double leftOutput = m_leftPIDController.calculate(encoderLeft.getVelocity(), setpoint);
         double rightOutput = m_rightPIDController.calculate(encoderRight.getVelocity(), setpoint);
         
@@ -61,7 +62,7 @@ public class Shooter extends SubsystemBase {
     }   
 
     public boolean atSetpoint() {
-        return m_leftPIDController.atSetpoint() && m_rightPIDController.atSetpoint();
+        return encoderLeft.getVelocity() >= m_leftPIDController.getSetpoint() - ShooterConstants.velocityTolerance && m_leftPIDController.getSetpoint() != 0;
     }
 
     public void extend() {

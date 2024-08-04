@@ -37,6 +37,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -90,7 +91,7 @@ public class Drivetrain extends SubsystemBase {
       DriverConstants.kD);
   private final PIDController m_rightPIDController = new PIDController(DriverConstants.kP, DriverConstants.kI,
       DriverConstants.kD);
-  private final PIDController m_roationalPIDController = new PIDController(DriverConstants.kP, DriverConstants.kI,
+  public final PIDController m_roationalPIDController = new PIDController(0.001, DriverConstants.kI,
       DriverConstants.kD);
 
   private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(DriverConstants.kS,
@@ -135,6 +136,8 @@ public class Drivetrain extends SubsystemBase {
           },
           this));
 
+  public Field2d m_field = new Field2d();
+
   public List<Pose2d> posesPreAlignment = new ArrayList<>();
   public List<Pose2d> posesAligned = new ArrayList<>();
 
@@ -173,7 +176,7 @@ public class Drivetrain extends SubsystemBase {
     driveEncoderLeft.setDistancePerPulse(DriverConstants.distancePerPulse);
     driveEncoderRight.setDistancePerPulse(DriverConstants.distancePerPulse);
 
-    m_roationalPIDController.enableContinuousInput(180, 180);
+    m_roationalPIDController.enableContinuousInput(-180, 180);
 
     AutoBuilder.configureLTV(
         this::getPose,
@@ -208,6 +211,11 @@ public class Drivetrain extends SubsystemBase {
       posesPreAlignment.add(GeometryUtil.flipFieldPose(posesPreAlignment.get(i)));
       posesAligned.add(GeometryUtil.flipFieldPose(posesAligned.get(i)));
     }
+
+    SmartDashboard.putData("Field", m_field);
+    SmartDashboard.putData("LEFT ENCODER", driveEncoderLeft);
+    SmartDashboard.putData("RIGHT ENCODER", driveEncoderRight);
+    SmartDashboard.putData("Drivetrain", drivetrain);
   }
 
   public void drive(double left, double right) {
@@ -216,19 +224,18 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putData("LEFT ENCODER", driveEncoderLeft);
-    SmartDashboard.putData("RIGHT ENCODER", driveEncoderRight);
-    SmartDashboard.putData("Drivetrain", drivetrain);
-    SmartDashboard.putData("Gyro", gyro);
-
+    SmartDashboard.putNumber("Gyro", getHeadingRelative());
+    SmartDashboard.putNumber("Position Error", m_roationalPIDController.getPositionError());
     m_poseEstimator.update(gyro.getRotation2d(), driveEncoderLeft.getDistance(), driveEncoderRight.getDistance());
-
+    
     var visionEST = photonPoseEstimator.update();
     visionEST.ifPresent(
         est -> {
           m_poseEstimator.addVisionMeasurement(
               est.estimatedPose.toPose2d(), est.timestampSeconds);
         });
+      
+    m_field.setRobotPose(getPose());
   }
 
   public ChassisSpeeds giveCurrentSpeeds() {
@@ -248,6 +255,10 @@ public class Drivetrain extends SubsystemBase {
 
   public void resetGyro() {
     gyro.reset();
+  }
+  
+  public void curvatureDrive(double xSpeed, double rotation, boolean turnInPlace) {
+    drivetrain.curvatureDrive(xSpeed, rotation, turnInPlace);
   }
 
   public void resetPose(Pose2d pose) {
@@ -285,8 +296,6 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void rotate(double angle) {
-    double rotationalOutput = m_roationalPIDController.calculate(getHeading(), angle);
-    drivetrain.arcadeDrive(0, rotationalOutput);
   }
 
   public void chassisDrive(ChassisSpeeds speed) {
@@ -311,6 +320,10 @@ public class Drivetrain extends SubsystemBase {
 
   public double getHeading() {
     return gyro.getRotation2d().getDegrees();
+  }
+
+  public double getHeadingRelative() {
+    return gyro.getRotation2d().getDegrees() % 180;
   }
 
   public void stop() {

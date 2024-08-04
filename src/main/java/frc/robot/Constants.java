@@ -19,7 +19,7 @@ public final class Constants {
     public static final double distancePerPulse = wheelCircumference / throughBoreCPR;
     public static final double kP = 0.01;
     public static final double kI = 0.0001;
-    public static final double kD = 0.000001;
+    public static final double kD = 0.01;
     public static final double kS = 0;
     public static final double kV = 2.16;
     public static final double kA = 0.60;
@@ -32,7 +32,7 @@ public final class Constants {
   }
 
   public static class cameraConstants{
-    public static final String kCamName = "front Camera";
+    public static final String kCamName = "cam";
   }
 
   public static class IntakeConstants{
@@ -54,13 +54,13 @@ public final class Constants {
     public static final double maxRPM = 5880;
     public static final double ampSpeed = 500;
     public static final int currentLimit = 40;
-    public static final double kP = 0.01;
+    public static final double kP = 1.0;
     public static final double kI = 0.01;
     public static final double kD = 0.00001;
     public static final double kS = 0;
     public static final double kV = 0.26;
     public static final double kA = 0.14;
-    public static final double velocityTolerance = 50;
+    public static final double velocityTolerance = 250;
   }
 
   public static class HangConstants{
