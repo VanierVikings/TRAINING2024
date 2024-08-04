@@ -23,13 +23,13 @@ public class Rotate extends Command{
     
     @Override
     public void execute() {
-      double rotationalOutput = MathUtil.clamp(m_drivetrain.m_roationalPIDController.calculate(m_drivetrain.getHeadingRelative(), angle), -25.0, 25.0);
+      double rotationalOutput = MathUtil.clamp(m_drivetrain.m_roationalPIDController.calculate(m_drivetrain.getHeadingRelative(), angle), -0.75, 0.75);
       SmartDashboard.putNumber("PID Output", rotationalOutput);
-      m_drivetrain.curvatureDrive(0, rotationalOutput, true);
+      m_drivetrain.curvatureDrive(0, -rotationalOutput, true);
     }
   
     @Override
     public boolean isFinished() {
-      return m_drivetrain.getHeadingRelative() <= angle + 5 && m_drivetrain.getHeadingRelative() >= angle - 5;
+      return Math.abs(m_drivetrain.m_roationalPIDController.getPositionError()) < 5;
     }
 }

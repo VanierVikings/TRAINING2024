@@ -91,8 +91,8 @@ public class Drivetrain extends SubsystemBase {
       DriverConstants.kD);
   private final PIDController m_rightPIDController = new PIDController(DriverConstants.kP, DriverConstants.kI,
       DriverConstants.kD);
-  public final PIDController m_roationalPIDController = new PIDController(0.001, DriverConstants.kI,
-      DriverConstants.kD);
+  public final PIDController m_roationalPIDController = new PIDController(0.015, 0,0.003)
+     ;
 
   private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(DriverConstants.kS,
       DriverConstants.kV, DriverConstants.kA);
@@ -176,7 +176,7 @@ public class Drivetrain extends SubsystemBase {
     driveEncoderLeft.setDistancePerPulse(DriverConstants.distancePerPulse);
     driveEncoderRight.setDistancePerPulse(DriverConstants.distancePerPulse);
 
-    m_roationalPIDController.enableContinuousInput(-180, 180);
+    m_roationalPIDController.enableContinuousInput(0, 360);
 
     AutoBuilder.configureLTV(
         this::getPose,
@@ -323,7 +323,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getHeadingRelative() {
-    return gyro.getRotation2d().getDegrees() % 180;
+    return Math.abs((gyro.getRotation2d().getDegrees()+360000) % 360);
   }
 
   public void stop() {
