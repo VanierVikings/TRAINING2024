@@ -323,7 +323,8 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getHeadingRelative() {
-    return Math.abs((gyro.getRotation2d().getDegrees()+360000) % 360);
+    // return Math.abs((gyro.getRotation2d().getDegrees()+360000) % 360);
+    return Math.IEEEremainder(gyro.getAngle(), 360) * -1;
   }
 
   public void stop() {

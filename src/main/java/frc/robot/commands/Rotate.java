@@ -1,8 +1,6 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Drivetrain;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
@@ -23,9 +21,8 @@ public class Rotate extends Command{
     
     @Override
     public void execute() {
-      double rotationalOutput = MathUtil.clamp(m_drivetrain.m_roationalPIDController.calculate(m_drivetrain.getHeadingRelative(), angle), -0.75, 0.75);
-      SmartDashboard.putNumber("PID Output", rotationalOutput);
-      m_drivetrain.curvatureDrive(0, -rotationalOutput, true);
+      double rotationalOutput = m_drivetrain.m_roationalPIDController.calculate(m_drivetrain.getHeadingRelative(), angle);
+      m_drivetrain.curvatureDrive(0, rotationalOutput, true);
     }
   
     @Override
