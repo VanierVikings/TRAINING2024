@@ -27,6 +27,6 @@ public class Rotate extends Command{
   
     @Override
     public boolean isFinished() {
-      return Math.abs(m_drivetrain.m_roationalPIDController.getPositionError()) < 5;
+      return m_drivetrain.m_roationalPIDController.atSetpoint();
     }
 }

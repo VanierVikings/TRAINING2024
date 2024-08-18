@@ -40,8 +40,8 @@ public class Shooter extends SubsystemBase {
         shooterPrimeLeft.setSmartCurrentLimit(ShooterConstants.currentLimit);
         shooterPrimeRight.setSmartCurrentLimit(ShooterConstants.currentLimit);
 
-        m_leftPIDController.setTolerance(0, ShooterConstants.velocityTolerance);
-        m_rightPIDController.setTolerance(0, ShooterConstants.velocityTolerance);
+        m_leftPIDController.setTolerance(ShooterConstants.tolerance);
+        m_rightPIDController.setTolerance(ShooterConstants.tolerance);
     }
 
     public void setShooterFeed(double speed) {
@@ -62,7 +62,7 @@ public class Shooter extends SubsystemBase {
     }   
 
     public boolean atSetpoint() {
-        return encoderLeft.getVelocity() >= m_leftPIDController.getSetpoint() - ShooterConstants.velocityTolerance && m_leftPIDController.getSetpoint() != 0;
+        return m_leftPIDController.atSetpoint() && m_rightPIDController.atSetpoint();
     }
 
     public void extend() {

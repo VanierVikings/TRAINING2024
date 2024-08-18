@@ -17,6 +17,7 @@ import frc.robot.commands.Amp;
 import frc.robot.commands.FloorIntake;
 import frc.robot.commands.HangRetract;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.SpeakerAlign;
 import frc.robot.commands.Prime;
 import frc.robot.commands.Rotate;
 import frc.robot.commands.TopIntake;
@@ -136,6 +137,9 @@ public class RobotContainer {
 
         controllers.mDriver
                 .b().onTrue(new Rotate(m_drivetrain, 90));
+
+        controllers.mDriver
+                .a().onTrue(new SpeakerAlign(m_drivetrain));
         
         /*
         controllers.mControls

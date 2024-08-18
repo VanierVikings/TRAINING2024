@@ -168,6 +168,7 @@ public class Drivetrain extends SubsystemBase {
     driveEncoderRight.setDistancePerPulse(DriverConstants.distancePerPulse);
 
     m_roationalPIDController.enableContinuousInput(0, 360);
+    m_roationalPIDController.setTolerance(DriverConstants.rotationalTolerance);
 
     AutoBuilder.configureLTV(
         this::getPose,
@@ -284,9 +285,6 @@ public class Drivetrain extends SubsystemBase {
     double opp = current.getX() - target.getX();
 
     return Math.toDegrees(Math.atan(opp / adj));
-  }
-
-  public void rotate(double angle) {
   }
 
   public void chassisDrive(ChassisSpeeds speed) {

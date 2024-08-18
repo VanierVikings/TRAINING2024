@@ -23,7 +23,7 @@ public final class Constants {
     public static final double kS = 0;
     public static final double kV = 2.16;
     public static final double kA = 0.60;
-    public static final double shooterTolerance = 100;
+    public static final double rotationalTolerance = 3;
   }
 
   public static class OperatorConstants{
@@ -60,7 +60,7 @@ public final class Constants {
     public static final double kS = 0;
     public static final double kV = 0.26;
     public static final double kA = 0.14;
-    public static final double velocityTolerance = 250;
+    public static final double tolerance = 50;
   }
 
   public static class HangConstants{
