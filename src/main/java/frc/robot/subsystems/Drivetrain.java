@@ -17,6 +17,8 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.hal.SimDouble;
+import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -26,6 +28,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.math.system.LinearSystem;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
@@ -35,6 +41,9 @@ import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -98,10 +107,6 @@ public class Drivetrain extends SubsystemBase {
       DriverConstants.kV, DriverConstants.kA);
 
   private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(DriverConstants.trackWidth);
-
-  private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
-  private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
-  private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
   private final DifferentialDrivePoseEstimator m_poseEstimator = new DifferentialDrivePoseEstimator(
       kinematics,
       gyro.getRotation2d(),
@@ -118,28 +123,21 @@ public class Drivetrain extends SubsystemBase {
             leftFront.set(volts.in(Volts) / RobotController.getBatteryVoltage());
             rightFront.set(volts.in(Volts) / RobotController.getBatteryVoltage());
           },
-          log -> {
-            log.motor("drive-left")
-                .voltage(
-                    m_appliedVoltage.mut_replace(
-                        leftFront.getAppliedOutput() * leftFront.getBusVoltage(), Volts))
-                .linearPosition(m_distance.mut_replace(driveEncoderLeft.getDistance(), Meters))
-                .linearVelocity(
-                    m_velocity.mut_replace(driveEncoderLeft.getRate(), MetersPerSecond));
-            log.motor("drive-right")
-                .voltage(
-                    m_appliedVoltage.mut_replace(
-                        rightFront.getAppliedOutput() * rightFront.getBusVoltage(), Volts))
-                .linearPosition(m_distance.mut_replace(driveEncoderRight.getDistance(), Meters))
-                .linearVelocity(
-                    m_velocity.mut_replace(driveEncoderRight.getRate(), MetersPerSecond));
-          },
+          null,
           this));
 
   public Field2d m_field = new Field2d();
 
   public List<Pose2d> posesPreAlignment = new ArrayList<>();
   public List<Pose2d> posesAligned = new ArrayList<>();
+
+  private final EncoderSim m_leftEncoderSim = new EncoderSim(driveEncoderLeft);
+  private final EncoderSim m_rightEncoderSim = new EncoderSim(driveEncoderRight);
+  private final LinearSystem<N2, N2, N2> m_drivetrainSystem =
+      LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
+  private final DifferentialDrivetrainSim m_driveSim =
+      new DifferentialDrivetrainSim(
+          m_drivetrainSystem, DCMotor.getNEO(4), 8.46, DriverConstants.trackWidth, DriverConstants.wheelDiameter/2, null);
 
   public Drivetrain() {
     resetEncoders();
@@ -341,5 +339,22 @@ public class Drivetrain extends SubsystemBase {
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutine.dynamic(direction);
   }
+
+  @Override
+  public void simulationPeriodic() {
+    m_driveSim.setInputs(leftFront.get() * RobotController.getInputVoltage(),
+                         rightFront.get() * RobotController.getInputVoltage());
+  
+    m_driveSim.update(0.02);
+  
+    m_leftEncoderSim.setDistance(m_driveSim.getLeftPositionMeters());
+    m_leftEncoderSim.setRate(m_driveSim.getLeftVelocityMetersPerSecond());
+    m_rightEncoderSim.setDistance(m_driveSim.getRightPositionMeters());
+    m_rightEncoderSim.setRate(m_driveSim.getRightVelocityMetersPerSecond());
+    int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
+    SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
+    angle.set(5.0);
+      }
+  
 
 }
