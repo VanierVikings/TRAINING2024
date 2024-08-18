@@ -23,7 +23,7 @@ public final class Constants {
     public static final double kS = 0;
     public static final double kV = 2.16;
     public static final double kA = 0.60;
-    public static final double rotationalTolerance = 3;
+    public static final double rotationalTolerance = 5;
   }
 
   public static class OperatorConstants{

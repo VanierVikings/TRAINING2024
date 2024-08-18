@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.HangConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
@@ -174,8 +175,8 @@ public class RobotContainer {
         controllers.mControls
                 .y()
                 .and(controllers.mControls.leftBumper())
-                .whileTrue(m_drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-                */
+                .whileTrue(m_drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse)); */
+
     }
 
     public Command getAutonomousCommand() {

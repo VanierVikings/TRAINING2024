@@ -109,7 +109,7 @@ public class Drivetrain extends SubsystemBase {
       VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
       VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
 
-  private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
+  public final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(),
       new SysIdRoutine.Mechanism(
           (Measure<Voltage> volts) -> {
@@ -225,6 +225,7 @@ public class Drivetrain extends SubsystemBase {
         est -> {
           m_poseEstimator.addVisionMeasurement(
               est.estimatedPose.toPose2d(), est.timestampSeconds);
+          SmartDashboard.putBoolean("vision", true);
         });
       
     m_field.setRobotPose(getPose());
