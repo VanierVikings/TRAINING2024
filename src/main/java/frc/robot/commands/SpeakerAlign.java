@@ -25,7 +25,7 @@ public class SpeakerAlign extends Command {
     double rotationAngle = m_drivetrain.alignmentAngle(prealignmnent, m_drivetrain.getPose());
     int index = m_drivetrain.posesPreAlignment.indexOf(prealignmnent);
 
-    new Rotate(m_drivetrain, rotationAngle);
+    new Rotate(m_drivetrain, rotationAngle).schedule();
 
     SmartDashboard.putNumber("To Speaker Angle", rotationAngle);
     SmartDashboard.putNumber("Alignment Index", index);
@@ -35,7 +35,7 @@ public class SpeakerAlign extends Command {
 
     Pose2d aligned = m_drivetrain.posesAligned.get(index);
 
-    new Rotate(m_drivetrain, aligned.getRotation().getDegrees());
+    new Rotate(m_drivetrain, aligned.getRotation().getDegrees()).schedule();
 
     constraints = new PathConstraints(0.5, 0.5, 0, 0);
     AutoBuilder.pathfindToPose(aligned, constraints, 0.0, 0.0);

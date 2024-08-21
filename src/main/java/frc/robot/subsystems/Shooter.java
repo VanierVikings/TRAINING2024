@@ -4,7 +4,7 @@ import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
@@ -39,12 +39,14 @@ public class Shooter extends SubsystemBase {
         shooterPrimeRight.restoreFactoryDefaults();
         shooterPrimeLeft.setSmartCurrentLimit(ShooterConstants.currentLimit);
         shooterPrimeRight.setSmartCurrentLimit(ShooterConstants.currentLimit);
+        shooterPrimeLeft.setIdleMode(IdleMode.kBrake);
+        shooterPrimeRight.setIdleMode(IdleMode.kBrake);
 
         m_leftPIDController.setTolerance(ShooterConstants.tolerance);
         m_rightPIDController.setTolerance(ShooterConstants.tolerance);
     }
 
-    public void setShooterFeed(double speed) {
+    public void setShooterFeed(double speed) {  
         shooterTopFeed.set(VictorSPXControlMode.PercentOutput, speed);
     }
 
@@ -57,12 +59,12 @@ public class Shooter extends SubsystemBase {
         double leftOutput = m_leftPIDController.calculate(encoderLeft.getVelocity(), setpoint);
         double rightOutput = m_rightPIDController.calculate(encoderRight.getVelocity(), setpoint);
         
-        shooterPrimeLeft.setVoltage(leftOutput + feedforward);
-        shooterPrimeRight.setVoltage(-(rightOutput + feedforward));
+        shooterPrimeLeft.setVoltage(-(leftOutput + feedforward));
+        shooterPrimeRight.setVoltage(rightOutput + feedforward);
     }   
 
     public boolean atSetpoint() {
-        return m_leftPIDController.atSetpoint() && m_rightPIDController.atSetpoint();
+        return m_rightPIDController.atSetpoint();
     }
 
     public void extend() {
@@ -76,7 +78,8 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Shooter Encoder", encoderLeft.getVelocity());
+        SmartDashboard.putNumber("LEFT Shooter Encoder", encoderLeft.getVelocity());
+        SmartDashboard.putNumber("RIGHT Shooter Encoder", encoderRight.getVelocity());
         if (atSetpoint() && !DriverStation.isAutonomous()){
             RobotContainer.controllers.mControls.getHID().setRumble(RumbleType.kBothRumble, 0.3);
         }

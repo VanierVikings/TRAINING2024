@@ -3,14 +3,12 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.PathPlannerLogging;
-
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.HangConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
@@ -18,6 +16,7 @@ import frc.robot.commands.Amp;
 import frc.robot.commands.FloorIntake;
 import frc.robot.commands.HangRetract;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.SnapSpeaker;
 import frc.robot.commands.SpeakerAlign;
 import frc.robot.commands.Prime;
 import frc.robot.commands.Rotate;
@@ -110,13 +109,13 @@ public class RobotContainer {
         controllers.mControls
                 .rightTrigger()
                 .whileTrue(
-                        new FloorIntake(m_intake, IntakeConstants.speed));
+                        new FloorIntake(m_intake, -IntakeConstants.speed));
 
         // Floor Intake Reverse
         controllers.mControls
                 .rightBumper()
                 .whileTrue(
-                        new FloorIntake(m_intake, -IntakeConstants.speed));
+                        new FloorIntake(m_intake, IntakeConstants.speed));
 
         // Top Intake
         controllers.mControls
@@ -137,10 +136,10 @@ public class RobotContainer {
                         new HangRetract(m_hang, -HangConstants.speed));
 
         controllers.mDriver
-                .b().onTrue(new Rotate(m_drivetrain, 90));
+                .b().onTrue(new SnapSpeaker(m_drivetrain));
 
         controllers.mDriver
-                .a().onTrue(new SpeakerAlign(m_drivetrain));
+                .x().onTrue(new SpeakerAlign(m_drivetrain));
         
         /*
         controllers.mControls

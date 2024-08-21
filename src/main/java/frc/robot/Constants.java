@@ -60,7 +60,7 @@ public final class Constants {
     public static final double kS = 0;
     public static final double kV = 0.26;
     public static final double kA = 0.14;
-    public static final double tolerance = 50;
+    public static final double tolerance = 250;
   }
 
   public static class HangConstants{
