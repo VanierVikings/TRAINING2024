@@ -194,7 +194,7 @@ public class Drivetrain extends SubsystemBase {
 
     aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0), new Rotation3d(0, 10, 0));
-    photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, cam,
+    photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cam,
         robotToCam);
 
     posesPreAlignmentBlue.add(new Pose2d(2, 5.55, Rotation2d.fromDegrees(0)));
@@ -210,12 +210,14 @@ public class Drivetrain extends SubsystemBase {
       posesAlignedRed.add(GeometryUtil.flipFieldPose(posesAlignedBlue.get(i)));
     }
 
-    SmartDashboard.putNumber("l", posesAlignedRed.size());
-
     SmartDashboard.putData("Field", m_field);
     SmartDashboard.putData("LEFT ENCODER", driveEncoderLeft);
     SmartDashboard.putData("RIGHT ENCODER", driveEncoderRight);
     SmartDashboard.putData("Drivetrain", drivetrain);
+    SmartDashboard.putNumber("Manual X", getPose().getX());
+    SmartDashboard.putNumber("Manual Y", getPose().getY());
+    SmartDashboard.putNumber("Manual Angle", getHeadingRelative());
+    SmartDashboard.putBoolean("Manually Reset Pose?", false);
   }
 
   public void drive(double left, double right) {
@@ -235,6 +237,13 @@ public class Drivetrain extends SubsystemBase {
               est.estimatedPose.toPose2d(), est.timestampSeconds);
           SmartDashboard.putBoolean("vision", true);
         });
+
+    if (SmartDashboard.getBoolean("Manually Reset Pose?", false)) {
+      double x = SmartDashboard.getNumber("X", getPose().getX());
+      double y = SmartDashboard.getNumber("Y", getPose().getY());
+      double angle = SmartDashboard.getNumber("Angle", getHeadingRelative());
+      resetPose(new Pose2d(x, y, new Rotation2d(Math.toRadians(angle))));
+    }
       
     m_field.setRobotPose(getPose());
   }

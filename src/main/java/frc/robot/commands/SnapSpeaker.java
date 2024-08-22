@@ -20,8 +20,6 @@ public class SnapSpeaker extends Command{
     public void initialize() {
       Pose2d pose = m_drivetrain.nearestAutoAlign(1);
       angle = m_drivetrain.alignmentAngle(pose, m_drivetrain.getPose());
-      SmartDashboard.putNumber("Alignment X", pose.getX());
-      SmartDashboard.putNumber("Alignment Y", pose.getY());
       SmartDashboard.putNumber("Alignment Angle", angle);
       new Rotate(m_drivetrain, angle).schedule();
     }
