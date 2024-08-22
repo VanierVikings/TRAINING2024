@@ -1,15 +1,13 @@
 {
   "HALProvider": {
-    "Encoders": {
-      "window": {
-        "visible": true
-      }
-    },
     "Other Devices": {
       "navX-Sensor[0]": {
         "header": {
           "open": true
         }
+      },
+      "window": {
+        "visible": false
       }
     }
   },
@@ -19,6 +17,46 @@
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Drivetrain": "DifferentialDrive",
       "/SmartDashboard/Field": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/Auto Chooser": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Drivetrain": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Field": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "retained": {
+      "SmartDashboard": {
+        "open": true
+      }
+    },
+    "transitory": {
+      "SmartDashboard": {
+        "open": true
+      },
+      "photonvision": {
+        "cam": {
+          "open": true
+        }
+      }
     }
   },
   "NetworkTables Info": {
@@ -31,5 +69,8 @@
       },
       "open": true
     }
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }

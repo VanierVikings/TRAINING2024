@@ -19,7 +19,6 @@ import frc.robot.commands.Shoot;
 import frc.robot.commands.SnapSpeaker;
 import frc.robot.commands.SpeakerAlign;
 import frc.robot.commands.Prime;
-import frc.robot.commands.Rotate;
 import frc.robot.commands.TopIntake;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hang;
@@ -28,7 +27,7 @@ import frc.robot.subsystems.Shooter;
 
 public class RobotContainer {
         private final Field2d field;
-        private final Drivetrain m_drivetrain = new Drivetrain();
+        public final Drivetrain m_drivetrain = new Drivetrain();
         private final Intake m_intake = new Intake();
         private final Shooter m_shooter = new Shooter();
         private final Hang m_hang = new Hang();

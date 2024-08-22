@@ -167,13 +167,16 @@ public class Drivetrain extends SubsystemBase {
     driveEncoderLeft.setDistancePerPulse(DriverConstants.distancePerPulse);
     driveEncoderRight.setDistancePerPulse(DriverConstants.distancePerPulse);
 
+    m_leftEncoderSim.setDistancePerPulse(DriverConstants.distancePerPulse);
+    m_rightEncoderSim.setDistancePerPulse(DriverConstants.distancePerPulse);
+
     m_roationalPIDController.enableContinuousInput(0, 360);
     m_roationalPIDController.setTolerance(DriverConstants.rotationalTolerance);
 
     AutoBuilder.configureLTV(
         this::getPose,
         this::resetPose,
-        this::giveCurrentSpeeds,
+        this::getChassisSpeeds,
         this::chassisDrive,
         0.02,
         new ReplanningConfig(),
@@ -231,7 +234,7 @@ public class Drivetrain extends SubsystemBase {
     m_field.setRobotPose(getPose());
   }
 
-  public ChassisSpeeds giveCurrentSpeeds() {
+  public ChassisSpeeds getChassisSpeeds() {
     var wheelSpeeds = new DifferentialDriveWheelSpeeds(driveEncoderLeft.getRate(), driveEncoderRight.getRate());
     ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(wheelSpeeds);
     return chassisSpeeds;
@@ -332,11 +335,10 @@ public class Drivetrain extends SubsystemBase {
     return m_sysIdRoutine.dynamic(direction);
   }
 
-  @Override
-  public void simulationPeriodic() {
+  public void simUpdate() {
     m_driveSim.setInputs(leftFront.get() * RobotController.getInputVoltage(),
                          rightFront.get() * RobotController.getInputVoltage());
-  
+
     m_driveSim.update(0.02);
   
     m_leftEncoderSim.setDistance(m_driveSim.getLeftPositionMeters());
@@ -345,7 +347,7 @@ public class Drivetrain extends SubsystemBase {
     m_rightEncoderSim.setRate(m_driveSim.getRightVelocityMetersPerSecond());
     int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
     SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
-    angle.set(5.0);
+    angle.set(-m_driveSim.getHeading().getDegrees());
       }
   
 
