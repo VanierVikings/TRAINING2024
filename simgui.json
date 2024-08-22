@@ -24,11 +24,6 @@
           "visible": true
         }
       },
-      "/SmartDashboard/Drivetrain": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/Field": {
         "bottom": 1476,
         "height": 8.210550308227539,
@@ -69,8 +64,5 @@
       },
       "open": true
     }
-  },
-  "NetworkTables View": {
-    "visible": false
   }
 }

@@ -1,6 +1,8 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
@@ -10,12 +12,17 @@ public class SnapSpeaker extends Command{
 
     public SnapSpeaker(Drivetrain m_drivetrain){
       SnapSpeaker.m_drivetrain = m_drivetrain;
-      setName("Snap Speed");
+      setName("Snap Speaker");
       addRequirements(m_drivetrain);
     }
 
     @Override
     public void initialize() {
+      Pose2d pose = m_drivetrain.nearestAutoAlign(1);
+      angle = m_drivetrain.alignmentAngle(pose, m_drivetrain.getPose());
+      SmartDashboard.putNumber("Alignment X", pose.getX());
+      SmartDashboard.putNumber("Alignment Y", pose.getY());
+      SmartDashboard.putNumber("Alignment Angle", angle);
       new Rotate(m_drivetrain, angle).schedule();
     }
     

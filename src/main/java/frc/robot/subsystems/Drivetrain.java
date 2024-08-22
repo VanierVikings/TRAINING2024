@@ -121,8 +121,11 @@ public class Drivetrain extends SubsystemBase {
 
   public Field2d m_field = new Field2d();
 
-  public List<Pose2d> posesPreAlignment = new ArrayList<>();
-  public List<Pose2d> posesAligned = new ArrayList<>();
+  public List<Pose2d> posesPreAlignmentBlue = new ArrayList<>();
+  public List<Pose2d> posesAlignedBlue = new ArrayList<>();
+
+  public List<Pose2d> posesPreAlignmentRed = new ArrayList<>();
+  public List<Pose2d> posesAlignedRed = new ArrayList<>();
 
   private final EncoderSim m_leftEncoderSim = new EncoderSim(driveEncoderLeft);
   private final EncoderSim m_rightEncoderSim = new EncoderSim(driveEncoderRight);
@@ -170,7 +173,7 @@ public class Drivetrain extends SubsystemBase {
     m_leftEncoderSim.setDistancePerPulse(DriverConstants.distancePerPulse);
     m_rightEncoderSim.setDistancePerPulse(DriverConstants.distancePerPulse);
 
-    m_roationalPIDController.enableContinuousInput(0, 360);
+    m_roationalPIDController.enableContinuousInput(-180, 180);
     m_roationalPIDController.setTolerance(DriverConstants.rotationalTolerance);
 
     AutoBuilder.configureLTV(
@@ -194,18 +197,20 @@ public class Drivetrain extends SubsystemBase {
     photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, cam,
         robotToCam);
 
-    posesPreAlignment.add(new Pose2d(2, 5.55, Rotation2d.fromDegrees(0)));
-    posesPreAlignment.add(new Pose2d(1, 6.97, Rotation2d.fromDegrees(-116)));
-    posesPreAlignment.add(new Pose2d(1, 4.02, Rotation2d.fromDegrees(116)));
+    posesPreAlignmentBlue.add(new Pose2d(2, 5.55, Rotation2d.fromDegrees(0)));
+    posesPreAlignmentBlue.add(new Pose2d(1, 6.97, Rotation2d.fromDegrees(-116)));
+    posesPreAlignmentBlue.add(new Pose2d(1, 4.02, Rotation2d.fromDegrees(116)));
 
-    posesAligned.add(new Pose2d(1.31, 5.56, Rotation2d.fromDegrees(0)));
-    posesAligned.add(new Pose2d(0.74, 6.61, Rotation2d.fromDegrees(64)));
-    posesAligned.add(new Pose2d(0.74, 4.50, Rotation2d.fromDegrees(-64)));
+    posesAlignedBlue.add(new Pose2d(1.31, 5.56, Rotation2d.fromDegrees(0)));
+    posesAlignedBlue.add(new Pose2d(0.74, 6.61, Rotation2d.fromDegrees(64)));
+    posesAlignedBlue.add(new Pose2d(0.74, 4.50, Rotation2d.fromDegrees(-64)));
 
-    for(int i = 0; i < 2; i++) {
-      posesPreAlignment.add(GeometryUtil.flipFieldPose(posesPreAlignment.get(i)));
-      posesAligned.add(GeometryUtil.flipFieldPose(posesAligned.get(i)));
+    for(int i = 0; i < 3; i++) {
+      posesPreAlignmentRed.add(GeometryUtil.flipFieldPose(posesPreAlignmentBlue.get(i)));
+      posesAlignedRed.add(GeometryUtil.flipFieldPose(posesAlignedBlue.get(i)));
     }
+
+    SmartDashboard.putNumber("l", posesAlignedRed.size());
 
     SmartDashboard.putData("Field", m_field);
     SmartDashboard.putData("LEFT ENCODER", driveEncoderLeft);
@@ -274,21 +279,19 @@ public class Drivetrain extends SubsystemBase {
     rightFront.setVoltage(-(rightOutput + rightFeedforward));
   }
 
-  public Pose2d nearestAutoAlign(List<Pose2d> poses) {
+  public Pose2d nearestAutoAlign(int alignmentType) {
     Optional<Alliance> ally = DriverStation.getAlliance();
     if (ally.isPresent()) {
       if (ally.get() == Alliance.Red) {
-        return GeometryUtil.flipFieldPose(getPose().nearest(poses));
+        return getPose().nearest(alignmentType == 0 ? posesPreAlignmentRed : posesAlignedRed);
       }
     }
-    return getPose().nearest(poses);
+
+    return getPose().nearest(alignmentType == 0 ? posesPreAlignmentBlue : posesAlignedBlue);
   }
 
   public double alignmentAngle(Pose2d target, Pose2d current) {
-    double adj = current.getY() - target.getY();
-    double opp = current.getX() - target.getX();
-
-    return Math.toDegrees(Math.atan(opp / adj));
+    return Math.toDegrees(Math.atan2(target.getY() - current.getY(), target.getX() - current.getX()));
   }
 
   public void chassisDrive(ChassisSpeeds speed) {

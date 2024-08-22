@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.HangConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
@@ -134,13 +135,15 @@ public class RobotContainer {
                 .whileTrue(
                         new HangRetract(m_hang, -HangConstants.speed));
 
+        // BUTTON 2 FOR SIM                        
         controllers.mDriver
                 .b().onTrue(new SnapSpeaker(m_drivetrain));
 
+        // BUTTON 3 FOR SIM
         controllers.mDriver
                 .x().onTrue(new SpeakerAlign(m_drivetrain));
         
-        /*
+        
         controllers.mControls
         .a()
         .and(controllers.mControls.rightBumper())
@@ -173,7 +176,7 @@ public class RobotContainer {
         controllers.mControls
                 .y()
                 .and(controllers.mControls.leftBumper())
-                .whileTrue(m_drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse)); */
+                .whileTrue(m_drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     }
 

@@ -20,7 +20,8 @@ public class SpeakerAlign extends Command {
 
   @Override
   public void initialize() {
-    Pose2d prealignmnent = m_drivetrain.nearestAutoAlign(m_drivetrain.posesPreAlignment);
+    /*
+    Pose2d prealignmnent = m_drivetrain.nearestAutoAlign(0);
 
     double rotationAngle = m_drivetrain.alignmentAngle(prealignmnent, m_drivetrain.getPose());
     int index = m_drivetrain.posesPreAlignment.indexOf(prealignmnent);
@@ -38,7 +39,7 @@ public class SpeakerAlign extends Command {
     new Rotate(m_drivetrain, aligned.getRotation().getDegrees()).schedule();
 
     constraints = new PathConstraints(0.5, 0.5, 0, 0);
-    AutoBuilder.pathfindToPose(aligned, constraints, 0.0, 0.0);
+    AutoBuilder.pathfindToPose(aligned, constraints, 0.0, 0.0);*/
   }
 
   @Override

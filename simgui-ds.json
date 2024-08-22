@@ -1,5 +1,10 @@
 {
-  "FMS": {
+  "Joysticks": {
+    "window": {
+      "visible": false
+    }
+  },
+  "System Joysticks": {
     "window": {
       "visible": false
     }
@@ -23,12 +28,13 @@
         }
       ],
       "axisCount": 6,
-      "buttonCount": 0,
+      "buttonCount": 4,
       "buttonKeys": [
         90,
         88,
         67,
-        86
+        86,
+        -1
       ],
       "povConfig": [
         {
