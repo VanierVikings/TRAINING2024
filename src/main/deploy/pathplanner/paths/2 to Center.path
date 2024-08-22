@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "prime",
-      "waypointRelativePos": 0.85,
+      "waypointRelativePos": 0.75,
       "command": {
         "type": "sequential",
         "data": {
@@ -49,7 +49,7 @@
       }
     },
     {
-      "name": "intak",
+      "name": "intake",
       "waypointRelativePos": 0.0,
       "command": {
         "type": "race",
@@ -64,7 +64,7 @@
             {
               "type": "wait",
               "data": {
-                "waitTime": 0.65
+                "waitTime": 0.45
               }
             }
           ]

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.66842498306965,
-        "y": 5.56
+        "x": 8.504807866758592,
+        "y": 5.687869661453608
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.655142072893975,
-        "y": 6.0325015808925
+        "x": 7.491524956582916,
+        "y": 6.160371242346109
       },
       "isLocked": false,
       "linkedName": "Note 5"
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "Prime",
-      "waypointRelativePos": 0.35,
+      "waypointRelativePos": 0.6,
       "command": {
         "type": "sequential",
         "data": {
@@ -42,6 +42,29 @@
               "type": "named",
               "data": {
                 "name": "Prime"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "race",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Floor Intake"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.45
               }
             }
           ]
