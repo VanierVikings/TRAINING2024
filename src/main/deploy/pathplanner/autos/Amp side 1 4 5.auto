@@ -24,7 +24,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.5
+                  "waitTime": 1.0
                 }
               }
             ]
@@ -43,7 +43,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.05
+                  "waitTime": 0.2
                 }
               }
             ]
@@ -68,13 +68,32 @@
               {
                 "type": "named",
                 "data": {
+                  "name": "Prime"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.6
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
                   "name": "Shoot"
                 }
               },
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.05
+                  "waitTime": 0.2
                 }
               }
             ]
@@ -99,13 +118,32 @@
               {
                 "type": "named",
                 "data": {
+                  "name": "Prime"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.6
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
                   "name": "Shoot"
                 }
               },
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.05
+                  "waitTime": 0.2
                 }
               }
             ]
@@ -130,13 +168,32 @@
               {
                 "type": "named",
                 "data": {
+                  "name": "Prime"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.6
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
                   "name": "Shoot"
                 }
               },
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.05
+                  "waitTime": 0.2
                 }
               }
             ]

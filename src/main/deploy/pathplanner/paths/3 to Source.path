@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "Prime",
-      "waypointRelativePos": 0.05,
+      "waypointRelativePos": 0.75,
       "command": {
         "type": "sequential",
         "data": {
@@ -42,6 +42,29 @@
               "type": "named",
               "data": {
                 "name": "Prime"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "race",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Floor Intake"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.45
               }
             }
           ]
