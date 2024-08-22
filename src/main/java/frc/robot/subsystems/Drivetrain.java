@@ -239,9 +239,9 @@ public class Drivetrain extends SubsystemBase {
         });
 
     if (SmartDashboard.getBoolean("Manually Reset Pose?", false)) {
-      double x = SmartDashboard.getNumber("X", getPose().getX());
-      double y = SmartDashboard.getNumber("Y", getPose().getY());
-      double angle = SmartDashboard.getNumber("Angle", getHeadingRelative());
+      double x = SmartDashboard.getNumber("Manual X", getPose().getX());
+      double y = SmartDashboard.getNumber("Manual Y", getPose().getY());
+      double angle = SmartDashboard.getNumber("Manual Angle", getHeadingRelative());
       resetPose(new Pose2d(x, y, new Rotation2d(Math.toRadians(angle))));
     }
       
