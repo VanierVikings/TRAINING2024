@@ -58,8 +58,8 @@ public final class Constants {
     public static final double kI = 0.01;
     public static final double kD = 0.00001;
     public static final double kS = 0;
-    public static final double kV = 0.26;
-    public static final double kA = 0.14;
+    public static final double kV = 2.16;
+    public static final double kA = 0.52;
     public static final double tolerance = 250;
   }
 

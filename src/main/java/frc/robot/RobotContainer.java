@@ -27,7 +27,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
 public class RobotContainer {
-        private final Field2d field;
         public final Drivetrain m_drivetrain = new Drivetrain();
         private final Intake m_intake = new Intake();
         private final Shooter m_shooter = new Shooter();
@@ -40,26 +39,6 @@ public class RobotContainer {
         }
 
         public RobotContainer() {
-        field = new Field2d();
-
-        // Logging callback for current robot pose
-        PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
-            // Do whatever you want with the pose here
-            field.setRobotPose(pose);
-        });
-
-        // Logging callback for target robot pose
-        PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
-            // Do whatever you want with the pose here
-            field.getObject("target pose").setPose(pose);
-        });
-
-        // Logging callback for the active path, this is sent as a list of poses
-        PathPlannerLogging.setLogActivePathCallback((poses) -> {
-            // Do whatever you want with the poses here
-            field.getObject("path").setPoses(poses);
-        });
-        
         NamedCommands.registerCommand("Prime", new Prime(m_shooter));
         NamedCommands.registerCommand("Shoot", new Shoot(m_shooter, m_intake));
         NamedCommands.registerCommand("Floor Intake", new FloorIntake(m_intake, 1));
@@ -69,7 +48,6 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser();
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
-        
     }
 
 
@@ -181,8 +159,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        m_drivetrain.resetEncoders();
-        m_drivetrain.resetGyro();
         return autoChooser.getSelected();
     }
 }

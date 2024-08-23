@@ -6,11 +6,12 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class SpeakerAlign extends Command {
   private static Drivetrain m_drivetrain;
+  private static double angle;
+  private static Pose2d pose;
 
   public SpeakerAlign(Drivetrain m_drivetrain) {
     SpeakerAlign.m_drivetrain = m_drivetrain;
@@ -20,26 +21,21 @@ public class SpeakerAlign extends Command {
 
   @Override
   public void initialize() {
-    /*
-    Pose2d prealignmnent = m_drivetrain.nearestAutoAlign(0);
+    pose = m_drivetrain.nearestAutoAlign(0);
+    angle = m_drivetrain.alignmentAngle(pose, m_drivetrain.getPose());
 
-    double rotationAngle = m_drivetrain.alignmentAngle(prealignmnent, m_drivetrain.getPose());
-    int index = m_drivetrain.posesPreAlignment.indexOf(prealignmnent);
+    new Rotate(m_drivetrain, angle).schedule(); 
+    
+    PathConstraints constraints = new PathConstraints(3.0, 4.0, 3, 4);
+    AutoBuilder.pathfindToPose(pose, constraints, 1, 1).schedule();
 
-    new Rotate(m_drivetrain, rotationAngle).schedule();
+    pose = m_drivetrain.nearestAutoAlign(1);
+    angle = m_drivetrain.alignmentAngle(pose, m_drivetrain.getPose());
 
-    SmartDashboard.putNumber("To Speaker Angle", rotationAngle);
-    SmartDashboard.putNumber("Alignment Index", index);
+    new Rotate(m_drivetrain, angle).schedule();
 
-    PathConstraints constraints = new PathConstraints(3.0, 4.0, 0, 0);
-    AutoBuilder.pathfindToPose(prealignmnent, constraints, 0.0, 0.0);
-
-    Pose2d aligned = m_drivetrain.posesAligned.get(index);
-
-    new Rotate(m_drivetrain, aligned.getRotation().getDegrees()).schedule();
-
-    constraints = new PathConstraints(0.5, 0.5, 0, 0);
-    AutoBuilder.pathfindToPose(aligned, constraints, 0.0, 0.0);*/
+    constraints = new  PathConstraints(1, 1, 1, 1);
+    AutoBuilder.pathfindToPose(pose, constraints, 0.0, 0.0).schedule();
   }
 
   @Override

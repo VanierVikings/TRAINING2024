@@ -64,6 +64,7 @@ import edu.wpi.first.wpilibj.Encoder;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.GeometryUtil;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 public class Drivetrain extends SubsystemBase {
@@ -130,10 +131,10 @@ public class Drivetrain extends SubsystemBase {
   private final EncoderSim m_leftEncoderSim = new EncoderSim(driveEncoderLeft);
   private final EncoderSim m_rightEncoderSim = new EncoderSim(driveEncoderRight);
   private final LinearSystem<N2, N2, N2> m_drivetrainSystem =
-      LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
+      LinearSystemId.identifyDrivetrainSystem(DriverConstants.kV, DriverConstants.kA, DriverConstants.kV, DriverConstants.kA);
   private final DifferentialDrivetrainSim m_driveSim =
       new DifferentialDrivetrainSim(
-          m_drivetrainSystem, DCMotor.getNEO(4), 8.46, DriverConstants.trackWidth, DriverConstants.wheelDiameter/2, null);
+          m_drivetrainSystem, DCMotor.getNEO(4), 8.46, DriverConstants.trackWidth, Units.inchesToMeters(DriverConstants.wheelDiameter/2), null);
 
   public Drivetrain() {
     resetEncoders();
@@ -244,8 +245,17 @@ public class Drivetrain extends SubsystemBase {
       double angle = SmartDashboard.getNumber("Manual Angle", getHeadingRelative());
       resetPose(new Pose2d(x, y, new Rotation2d(Math.toRadians(angle))));
     }
-      
+    
+    logPathPlanner();  
+
     m_field.setRobotPose(getPose());
+  }
+
+  public void logPathPlanner() {
+    PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+        m_field.setRobotPose(pose);
+        resetPose(pose);
+    });
   }
 
   public ChassisSpeeds getChassisSpeeds() {
