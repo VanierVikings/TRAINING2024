@@ -19,7 +19,7 @@ public class SnapSpeaker extends Command{
     @Override
     public void initialize() {
       Pose2d pose = m_drivetrain.nearestAutoAlign(1);
-      angle = m_drivetrain.alignmentAngle(pose, m_drivetrain.getPose());
+      angle = 180-m_drivetrain.alignmentAngle(pose, m_drivetrain.getPose());
       new Rotate(m_drivetrain, angle).schedule();
     }
     

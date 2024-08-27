@@ -23,7 +23,7 @@ public final class Constants {
     public static final double kS = 0;
     public static final double kV = 2.16;
     public static final double kA = 0.60;
-    public static final double rotationalTolerance = 3;
+    public static final double rotationalTolerance = 5;
   }
 
   public static class OperatorConstants{
@@ -51,16 +51,16 @@ public final class Constants {
     public static final double feedSpeed = 1.0;
     public static final double topIntakeSpeed = 0.5;
     public static final double delay = 5;
-    public static final double maxRPM = 5880;
+    public static final double maxRPM = 5650;
     public static final double ampSpeed = 500;
     public static final int currentLimit = 40;
-    public static final double kP = 1.0;
-    public static final double kI = 0.01;
+    public static final double kP = 0.0005;
+    public static final double kI = 0;
     public static final double kD = 0.00001;
     public static final double kS = 0;
-    public static final double kV = 2.16;
-    public static final double kA = 0.52;
-    public static final double tolerance = 250;
+    public static final double kV = 0.00015;
+    public static final double kA = 0.15;
+    public static final double tolerance = 50;
   }
 
   public static class HangConstants{

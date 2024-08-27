@@ -4,6 +4,8 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Intake;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.RobotContainer;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
@@ -32,10 +34,12 @@ public class Shoot extends Command{
     public void end(boolean interrupted) {
       m_shooter.stop();
       m_intake.stopFeeder();
+      RobotContainer.controllers.mControls.getHID().setRumble(RumbleType.kBothRumble, 0);
     }
   
     @Override
     public boolean isFinished() {
       return false;
+      
     }
 }

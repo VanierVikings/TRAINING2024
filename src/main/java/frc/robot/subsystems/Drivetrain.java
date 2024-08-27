@@ -94,8 +94,7 @@ public class Drivetrain extends SubsystemBase {
       DriverConstants.kD);
   private final PIDController m_rightPIDController = new PIDController(DriverConstants.kP, DriverConstants.kI,
       DriverConstants.kD);
-  public final PIDController m_roationalPIDController = new PIDController(0.015, 0,0.003)
-     ;
+  public final PIDController m_roationalPIDController = new PIDController(0.02, 0,0.003);
 
   private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(DriverConstants.kS,
       DriverConstants.kV, DriverConstants.kA);
@@ -151,10 +150,10 @@ public class Drivetrain extends SubsystemBase {
     rightFront.setSmartCurrentLimit(DriverConstants.currentLimit);
     rightRear.setSmartCurrentLimit(DriverConstants.currentLimit);
 
-    leftFront.setIdleMode(IdleMode.kCoast);
-    leftRear.setIdleMode(IdleMode.kCoast);
-    rightFront.setIdleMode(IdleMode.kCoast);
-    rightRear.setIdleMode(IdleMode.kCoast);
+    leftFront.setIdleMode(IdleMode.kBrake);
+    leftRear.setIdleMode(IdleMode.kBrake);
+    rightFront.setIdleMode(IdleMode.kBrake);
+    rightRear.setIdleMode(IdleMode.kBrake);
 
     encoderLeftFront.setPositionConversionFactor(-DriverConstants.positionConversionFactor);
     encoderLeftFront.setVelocityConversionFactor(-DriverConstants.velocityConversionFactor);
@@ -280,6 +279,7 @@ public class Drivetrain extends SubsystemBase {
   public void curvatureDrive(double xSpeed, double rotation, boolean turnInPlace) {
     drivetrain.curvatureDrive(xSpeed, rotation, turnInPlace);
   }
+  
 
   public void resetPose(Pose2d pose) {
     gyro.setAngleAdjustment(pose.getRotation().getDegrees());
@@ -334,14 +334,12 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getHeading() {
-    return gyro.getRotation2d().getDegrees();
+    return m_poseEstimator.getEstimatedPosition().getRotation().getDegrees();
+    //return gyro.getRotation2d().getDegrees();
   }
 
   public double getHeadingRelative() {
-    // return ;
-    SmartDashboard.putNumber("360000 output", Math.abs((gyro.getRotation2d().getDegrees()+360000) % 360));
-    SmartDashboard.putNumber("IEEE Remainder Output", Math.IEEEremainder(gyro.getAngle(), 360) * -1);
-    return Math.IEEEremainder(gyro.getAngle(), 360) * -1;
+    return Math.IEEEremainder(getHeading(), 360) * -1;
   }
 
   public void stop() {

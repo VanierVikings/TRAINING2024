@@ -20,6 +20,7 @@ import frc.robot.commands.Shoot;
 import frc.robot.commands.SnapSpeaker;
 import frc.robot.commands.SpeakerAlign;
 import frc.robot.commands.Prime;
+import frc.robot.commands.Rotate;
 import frc.robot.commands.TopIntake;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hang;
