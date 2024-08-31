@@ -176,22 +176,6 @@ public class Drivetrain extends SubsystemBase {
     m_roationalPIDController.enableContinuousInput(-180, 180);
     m_roationalPIDController.setTolerance(DriverConstants.rotationalTolerance);
 
-    AutoBuilder.configureLTV(
-        this::getPose,
-        this::resetPose,
-        this::getChassisSpeeds,
-        this::chassisDrive,
-        0.02,
-        new ReplanningConfig(),
-        () -> {
-          var alliance = DriverStation.getAlliance();
-          if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-          }
-          return false;
-        },
-        this);
-
     aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0), new Rotation3d(0, 10, 0));
     photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cam,
@@ -215,9 +199,25 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putData("RIGHT ENCODER", driveEncoderRight);
     SmartDashboard.putData("Drivetrain", drivetrain);
     SmartDashboard.putNumber("Manual X", getPose().getX());
-    SmartDashboard.putNumber("Manual Y", getPose().getY());
+    SmartDashboard.putNumber("Manual Y", getPose().getY()); 
     SmartDashboard.putNumber("Manual Angle", getHeadingRelative());
     SmartDashboard.putBoolean("Manually Reset Pose?", false);
+
+    AutoBuilder.configureLTV(
+        this::getPose,
+        this::resetPose,
+        this::getChassisSpeeds,
+        this::chassisDrive,
+        0.02,
+        new ReplanningConfig(),
+        () -> {
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this);
   }
 
   public void drive(double left, double right) {
@@ -230,25 +230,20 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("Position Error", m_roationalPIDController.getPositionError());
     m_poseEstimator.update(gyro.getRotation2d(), driveEncoderLeft.getDistance(), driveEncoderRight.getDistance());
     
-    var visionEST = photonPoseEstimator.update();
-    visionEST.ifPresent(
-        est -> {
-          m_poseEstimator.addVisionMeasurement(
-              est.estimatedPose.toPose2d(), est.timestampSeconds);
-          SmartDashboard.putBoolean("vision", true);
-        });
 
-    if (SmartDashboard.getBoolean("Manually Reset Pose?", false)) {
-      double x = SmartDashboard.getNumber("Manual X", getPose().getX());
-      double y = SmartDashboard.getNumber("Manual Y", getPose().getY());
-      double angle = SmartDashboard.getNumber("Manual Angle", getHeadingRelative());
-      resetPose(new Pose2d(x, y, new Rotation2d(Math.toRadians(angle))));
-    }
+      var visionEST = photonPoseEstimator.update();
+      visionEST.ifPresent(
+          est -> {
+            m_poseEstimator.addVisionMeasurement(
+                est.estimatedPose.toPose2d(), est.timestampSeconds);
+            SmartDashboard.putBoolean("vision", true);
+          });
+      
+      logPathPlanner();  
+
+      m_field.setRobotPose(getPose());
     
-    logPathPlanner();  
-
-    m_field.setRobotPose(getPose());
-  }
+} 
 
   public void logPathPlanner() {
     PathPlannerLogging.setLogTargetPoseCallback((pose) -> {

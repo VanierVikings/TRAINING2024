@@ -39,7 +39,7 @@ public final class Constants {
     public static final int intakeFeedId = 7;
     public static final int rightIntakeId = 8;
     public static final int leftIntakeId = 9;
-    public static final double speed = 1.0;
+    public static final double speed = 0.8;
   }
 
   public static class ShooterConstants{
@@ -51,10 +51,10 @@ public final class Constants {
     public static final double feedSpeed = 1.0;
     public static final double topIntakeSpeed = 0.5;
     public static final double delay = 5;
-    public static final double maxRPM = 5650;
+    public static final double maxRPM = 5800;
     public static final double ampSpeed = 500;
     public static final int currentLimit = 40;
-    public static final double kP = 0.0005;
+    public static final double kP = 0.001 ;
     public static final double kI = 0;
     public static final double kD = 0.00001;
     public static final double kS = 0;

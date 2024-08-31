@@ -24,6 +24,7 @@ public class Shoot extends Command{
     public void initialize() {
       m_shooter.set(ShooterConstants.maxRPM);
       m_intake.setFeeder(IntakeConstants.speed);
+      m_shooter.setShooterFeed(1);
     }
 
     @Override
