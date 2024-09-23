@@ -14,7 +14,7 @@ import frc.robot.Constants.HangConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Amp;
-import frc.robot.commands.FloorIntake;
+import frc.robot.commands.f;
 import frc.robot.commands.h;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.SnapSpeaker;
@@ -42,7 +42,7 @@ public class RobotContainer {
         public RobotContainer() {
         NamedCommands.registerCommand("Prime", new Prime(m_shooter));
         NamedCommands.registerCommand("Shoot", new Shoot(m_shooter, m_intake));
-        NamedCommands.registerCommand("Floor Intake", new FloorIntake(m_intake, 1));
+        NamedCommands.registerCommand("Floor Intake", new f(m_intake, 1));
         NamedCommands.registerCommand("Amp", new Amp(m_shooter, m_intake));
         configureBindings();
         
@@ -88,13 +88,13 @@ public class RobotContainer {
         controllers.mControls
                 .rightTrigger()
                 .whileTrue(
-                        new FloorIntake(m_intake, -IntakeConstants.speed));
+                        new f(m_intake, -IntakeConstants.speed));
 
         // Floor Intake Reverse
         controllers.mControls
                 .rightBumper()
                 .whileTrue(
-                        new FloorIntake(m_intake, IntakeConstants.speed));
+                        new f(m_intake, IntakeConstants.speed));
 
         // Top Intake
         controllers.mControls
