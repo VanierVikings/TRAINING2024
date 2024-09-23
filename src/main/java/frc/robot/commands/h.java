@@ -5,12 +5,12 @@ import frc.robot.subsystems.Hang;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
-public class HangRetract extends Command{
+public class h extends Command{
   private static Hang m_hang;
   double speed;
   
-    public HangRetract(Hang m_hang, double speed){
-        HangRetract.m_hang = m_hang;
+    public h(Hang m_hang, double speed){
+        h.m_hang = m_hang;
         this.speed = speed;
         setName("Hang Retract");
         addRequirements(m_hang);

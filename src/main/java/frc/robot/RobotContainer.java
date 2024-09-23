@@ -15,13 +15,13 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Amp;
 import frc.robot.commands.FloorIntake;
-import frc.robot.commands.HangRetract;
+import frc.robot.commands.h;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.SnapSpeaker;
 import frc.robot.commands.SpeakerAlign;
 import frc.robot.commands.Prime;
 import frc.robot.commands.Rotate;
-import frc.robot.commands.TopIntake;
+import frc.robot.commands.t;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hang;
 import frc.robot.subsystems.Intake;
@@ -100,19 +100,19 @@ public class RobotContainer {
         controllers.mControls
                 .x()
                 .whileTrue(
-                        new TopIntake(m_shooter));
+                        new t(m_shooter));
 
         // Hang Winch
         controllers.mControls
                 .a()
                 .whileTrue(
-                        new HangRetract(m_hang, HangConstants.speed));
+                        new h(m_hang, HangConstants.speed));
 
         // Hang Unwinch
         controllers.mControls
                 .y()
                 .whileTrue(
-                        new HangRetract(m_hang, -HangConstants.speed));
+                        new h(m_hang, -HangConstants.speed));
 
         // BUTTON 2 FOR SIM                        
         controllers.mDriver
