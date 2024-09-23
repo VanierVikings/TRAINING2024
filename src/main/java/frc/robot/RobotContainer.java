@@ -14,14 +14,14 @@ import frc.robot.Constants.HangConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Amp;
-import frc.robot.commands.f;
-import frc.robot.commands.h;
+import frc.robot.commands.FloorIntake;
+import frc.robot.commands.HangRetract;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.SnapSpeaker;
 import frc.robot.commands.SpeakerAlign;
 import frc.robot.commands.Prime;
 import frc.robot.commands.Rotate;
-import frc.robot.commands.t;
+import frc.robot.commands.TopIntake;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hang;
 import frc.robot.subsystems.Intake;
@@ -42,7 +42,7 @@ public class RobotContainer {
         public RobotContainer() {
         NamedCommands.registerCommand("Prime", new Prime(m_shooter));
         NamedCommands.registerCommand("Shoot", new Shoot(m_shooter, m_intake));
-        NamedCommands.registerCommand("Floor Intake", new f(m_intake, 1));
+        NamedCommands.registerCommand("Floor Intake", new FloorIntake(m_intake, 1));
         NamedCommands.registerCommand("Amp", new Amp(m_shooter, m_intake));
         configureBindings();
         
@@ -88,31 +88,31 @@ public class RobotContainer {
         controllers.mControls
                 .rightTrigger()
                 .whileTrue(
-                        new f(m_intake, -IntakeConstants.speed));
+                        new FloorIntake(m_intake, -IntakeConstants.speed));
 
         // Floor Intake Reverse
         controllers.mControls
                 .rightBumper()
                 .whileTrue(
-                        new f(m_intake, IntakeConstants.speed));
+                        new FloorIntake(m_intake, IntakeConstants.speed));
 
         // Top Intake
         controllers.mControls
                 .x()
                 .whileTrue(
-                        new t(m_shooter));
+                        new TopIntake(m_shooter));
 
         // Hang Winch
         controllers.mControls
                 .a()
                 .whileTrue(
-                        new h(m_hang, HangConstants.speed));
+                        new HangRetract(m_hang, HangConstants.speed));
 
         // Hang Unwinch
         controllers.mControls
                 .y()
                 .whileTrue(
-                        new h(m_hang, -HangConstants.speed));
+                        new HangRetract(m_hang, -HangConstants.speed));
 
         // BUTTON 2 FOR SIM                        
         controllers.mDriver

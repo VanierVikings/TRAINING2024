@@ -7,11 +7,11 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
-public class prim extends Command{
+public class Prime extends Command{
     private static Shooter m_shooter;
 
-    public prim(Shooter m_shooter){
-      prim.m_shooter = m_shooter;
+    public Prime(Shooter m_shooter){
+      Prime.m_shooter = m_shooter;
       setName("Prime");
       addRequirements(m_shooter);
     }
