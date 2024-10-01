@@ -2,14 +2,11 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.util.PathPlannerLogging;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.HangConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
@@ -17,10 +14,7 @@ import frc.robot.commands.Amp;
 import frc.robot.commands.FloorIntake;
 import frc.robot.commands.HangRetract;
 import frc.robot.commands.Shoot;
-import frc.robot.commands.SnapSpeaker;
-import frc.robot.commands.SpeakerAlign;
 import frc.robot.commands.Prime;
-import frc.robot.commands.Rotate;
 import frc.robot.commands.TopIntake;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hang;
@@ -61,6 +55,7 @@ public class RobotContainer {
                         m_drivetrain));*/
 
         /* FOR DUAL CONTROLLER SETUP UNCOMMENT THIS BLOCK*/
+
         //Tank Drive (2 controllers)            
         m_drivetrain.setDefaultCommand(new RunCommand(
                 () -> m_drivetrain.drive(controllers.mDriver.getLeftY(), controllers.mDriver.getRightY()),
@@ -113,50 +108,6 @@ public class RobotContainer {
                 .y()
                 .whileTrue(
                         new HangRetract(m_hang, -HangConstants.speed));
-
-        // BUTTON 2 FOR SIM                        
-        controllers.mDriver
-                .b().onTrue(new SnapSpeaker(m_drivetrain));
-
-        // BUTTON 3 FOR SIM
-        controllers.mDriver
-                .x().onTrue(new SpeakerAlign(m_drivetrain));
-        
-        
-        controllers.mControls
-        .a()
-        .and(controllers.mControls.rightBumper())
-        .whileTrue(m_drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        controllers.mControls
-                .b()
-                .and(controllers.mControls.rightBumper())
-                .whileTrue(m_drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        controllers.mControls
-                .x()
-                .and(controllers.mControls.rightBumper())
-                .whileTrue(m_drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        controllers.mControls
-                .y()
-                .and(controllers.mControls.rightBumper())
-                .whileTrue(m_drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-        controllers.mControls
-                .a()
-                .and(controllers.mControls.leftBumper())
-                .whileTrue(m_drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        controllers.mControls
-                .b()
-                .and(controllers.mControls.leftBumper())
-                .whileTrue(m_drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        controllers.mControls
-                .x()
-                .and(controllers.mControls.leftBumper())
-                .whileTrue(m_drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        controllers.mControls
-                .y()
-                .and(controllers.mControls.leftBumper())
-                .whileTrue(m_drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
     }
 
     public Command getAutonomousCommand() {

@@ -3,12 +3,9 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import org.littletonrobotics.urcl.*;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -71,7 +68,5 @@ public class Robot extends TimedRobot {
   public void simulationInit() {}
 
   @Override
-  public void simulationPeriodic() {
-    m_robotContainer.m_drivetrain.simUpdate();
-  }
+  public void simulationPeriodic() {}
 }
