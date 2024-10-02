@@ -40,6 +40,7 @@ public class Drivetrain extends SubsystemBase {
 
 
   public Drivetrain() {
+    /*
     resetEncoders();
     gyro.reset();
 
@@ -64,7 +65,7 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putData("LEFT ENCODER", driveEncoderLeft);
     SmartDashboard.putData("RIGHT ENCODER", driveEncoderRight);
-    SmartDashboard.putData("Drivetrain", drivetrain);
+    SmartDashboard.putData("Drivetrain", drivetrain);*/
   }
 
   public void drive(double left, double right) {
