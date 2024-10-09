@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -12,17 +11,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
-    private final CANSparkBase shooterPrimeRight = new CANSparkMax(ShooterConstants.shooterPrimeRightId,
+    private final CANSparkMax shooterPrimeRight = new CANSparkMax(ShooterConstants.shooterPrimeRightId,
             MotorType.kBrushless);
-    private final CANSparkBase shooterPrimeLeft = new CANSparkMax(ShooterConstants.shooterPrimeLeftId,
+    private final CANSparkMax shooterPrimeLeft = new CANSparkMax(ShooterConstants.shooterPrimeLeftId,
             MotorType.kBrushless);
     private final VictorSPX shooterTopFeed = new VictorSPX(ShooterConstants.shooterTopFeedId);
 
     private RelativeEncoder encoderLeft = shooterPrimeLeft.getEncoder();
     private RelativeEncoder encoderRight = shooterPrimeRight.getEncoder();
     public Shooter() {
-        shooterPrimeLeft.restoreFactoryDefaults();  
-        shooterPrimeRight.restoreFactoryDefaults();
         shooterPrimeLeft.setSmartCurrentLimit(ShooterConstants.currentLimit);
         shooterPrimeRight.setSmartCurrentLimit(ShooterConstants.currentLimit);
         shooterPrimeLeft.setIdleMode(IdleMode.kBrake);

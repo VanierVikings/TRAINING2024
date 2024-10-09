@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
-import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -24,10 +23,10 @@ import frc.robot.Constants.DriverConstants;
 import edu.wpi.first.wpilibj.Encoder;
 
 public class Drivetrain extends SubsystemBase {
-  private final CANSparkBase leftRear = new CANSparkMax(DriverConstants.leftRearId, MotorType.kBrushless);
-  private final CANSparkBase leftFront = new CANSparkMax(DriverConstants.leftFrontId, MotorType.kBrushless);
-  private final CANSparkBase rightRear = new CANSparkMax(DriverConstants.rightRearId, MotorType.kBrushless);
-  private final CANSparkBase rightFront = new CANSparkMax(DriverConstants.rightFrontId, MotorType.kBrushless);
+  private final CANSparkMax leftRear = new CANSparkMax(DriverConstants.leftRearId, MotorType.kBrushless);
+  private final CANSparkMax leftFront = new CANSparkMax(DriverConstants.leftFrontId, MotorType.kBrushless);
+  private final CANSparkMax rightRear = new CANSparkMax(DriverConstants.rightRearId, MotorType.kBrushless);
+  private final CANSparkMax rightFront = new CANSparkMax(DriverConstants.rightFrontId, MotorType.kBrushless);
   private final DifferentialDrive drivetrain = new DifferentialDrive(leftFront, rightFront);
 
   private final Encoder driveEncoderLeft = new Encoder(0, 1, true);
@@ -69,7 +68,7 @@ public class Drivetrain extends SubsystemBase {
 
   public void drive(double left, double right) {
     drivetrain.tankDrive(left, right, true);
-  }
+  } 
 
   @Override
   public void periodic() {

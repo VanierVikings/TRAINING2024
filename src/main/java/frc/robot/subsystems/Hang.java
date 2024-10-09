@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
 
-import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkRelativeEncoder;
@@ -13,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HangConstants;;
 
 public class Hang extends SubsystemBase {
-    private final CANSparkBase hookMotor = new CANSparkMax(HangConstants.hangId, MotorType.kBrushless);
+    private final CANSparkMax hookMotor = new CANSparkMax(HangConstants.hangId, MotorType.kBrushless);
     private final RelativeEncoder encoder = hookMotor.getEncoder(SparkRelativeEncoder.Type.kHallSensor, 42);
 
     @Override
