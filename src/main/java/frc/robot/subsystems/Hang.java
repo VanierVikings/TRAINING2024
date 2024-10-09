@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HangConstants;;
 
 public class Hang extends SubsystemBase {
-    private final CANSparkMax hookMotor = new CANSparkMax(HangConstants.hangId, MotorType.kBrushless);
-    private final RelativeEncoder encoder = hookMotor.getEncoder(SparkRelativeEncoder.Type.kHallSensor, 42);
+    private final CANSparkMax motor = new CANSparkMax(HangConstants.hangId, MotorType.kBrushless);
+    private final RelativeEncoder encoder = motor.getEncoder(SparkRelativeEncoder.Type.kHallSensor, 42);
 
     @Override
     public void periodic(){
@@ -21,7 +21,7 @@ public class Hang extends SubsystemBase {
     }
 
     public void set(double speed) {
-        hookMotor.set(speed);
+        motor.set(speed);
     }
 
     public BooleanSupplier canWinch(){

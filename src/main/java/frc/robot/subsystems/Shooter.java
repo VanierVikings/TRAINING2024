@@ -11,34 +11,34 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
-    private final CANSparkMax shooterPrimeRight = new CANSparkMax(ShooterConstants.shooterPrimeRightId,
+    private final CANSparkMax flywheelRight = new CANSparkMax(ShooterConstants.flywheelRightId,
             MotorType.kBrushless);
-    private final CANSparkMax shooterPrimeLeft = new CANSparkMax(ShooterConstants.shooterPrimeLeftId,
+    private final CANSparkMax flywheelLeft = new CANSparkMax(ShooterConstants.flywheelLeftId,
             MotorType.kBrushless);
-    private final VictorSPX shooterTopFeed = new VictorSPX(ShooterConstants.shooterTopFeedId);
+    private final VictorSPX feedMotor = new VictorSPX(ShooterConstants.feedMotorId);
 
-    private RelativeEncoder encoderLeft = shooterPrimeLeft.getEncoder();
-    private RelativeEncoder encoderRight = shooterPrimeRight.getEncoder();
+    private RelativeEncoder encoderLeft = flywheelLeft.getEncoder();
+    private RelativeEncoder encoderRight = flywheelRight.getEncoder();
     public Shooter() {
-        shooterPrimeLeft.setSmartCurrentLimit(ShooterConstants.currentLimit);
-        shooterPrimeRight.setSmartCurrentLimit(ShooterConstants.currentLimit);
-        shooterPrimeLeft.setIdleMode(IdleMode.kBrake);
-        shooterPrimeRight.setIdleMode(IdleMode.kBrake);
+        flywheelLeft.setSmartCurrentLimit(ShooterConstants.currentLimit);
+        flywheelRight.setSmartCurrentLimit(ShooterConstants.currentLimit);
+        flywheelLeft.setIdleMode(IdleMode.kBrake);
+        flywheelRight.setIdleMode(IdleMode.kBrake);
     }
 
     public void setShooterFeed(double speed) {  
-        shooterTopFeed.set(VictorSPXControlMode.PercentOutput, speed);
+        feedMotor.set(VictorSPXControlMode.PercentOutput, speed);
     }
 
     public void set(double speed) {
-        shooterPrimeLeft.set(speed);
-        shooterPrimeRight.set(-speed);
+        flywheelLeft.set(speed);
+        flywheelRight.set(-speed);
     }   
 
     public void stop() {
-        shooterTopFeed.set(VictorSPXControlMode.PercentOutput, 0);
-        shooterPrimeRight.stopMotor();
-        shooterPrimeLeft.stopMotor();
+        feedMotor.set(VictorSPXControlMode.PercentOutput, 0);
+        flywheelRight.stopMotor();
+        flywheelLeft.stopMotor();
     }
 
     @Override

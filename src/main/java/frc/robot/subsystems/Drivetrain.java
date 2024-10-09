@@ -27,7 +27,7 @@ public class Drivetrain extends SubsystemBase {
   private final CANSparkMax leftFront = new CANSparkMax(DriverConstants.leftFrontId, MotorType.kBrushless);
   private final CANSparkMax rightRear = new CANSparkMax(DriverConstants.rightRearId, MotorType.kBrushless);
   private final CANSparkMax rightFront = new CANSparkMax(DriverConstants.rightFrontId, MotorType.kBrushless);
-  private final DifferentialDrive drivetrain = new DifferentialDrive(leftFront, rightFront);
+  private final DifferentialDrive m_drivtrain = new DifferentialDrive(leftFront, rightFront);
 
   private final Encoder driveEncoderLeft = new Encoder(0, 1, true);
   private final Encoder driveEncoderRight = new Encoder(2, 3, false);
@@ -63,11 +63,11 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putData("LEFT ENCODER", driveEncoderLeft);
     SmartDashboard.putData("RIGHT ENCODER", driveEncoderRight);
-    SmartDashboard.putData("Drivetrain", drivetrain);
+    SmartDashboard.putData("Drivetrain", m_drivtrain);
   }
 
   public void drive(double left, double right) {
-    drivetrain.tankDrive(left, right, true);
+    m_drivtrain.tankDrive(left, right, true);
   } 
 
   @Override

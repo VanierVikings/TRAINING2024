@@ -43,9 +43,9 @@ public final class Constants {
   }
 
   public static class ShooterConstants{
-    public static final int shooterPrimeRightId  = 5;
-    public static final int shooterPrimeLeftId  = 11;
-    public static final int shooterTopFeedId = 6;
+    public static final int flywheelRightId  = 5;
+    public static final int flywheelLeftId  = 11;
+    public static final int feedMotorId = 6;
     public static final int shooterBottomFeedId = 7;
     public static final double primeSpeed = 1.0 ;
     public static final double feedSpeed = 1.0;

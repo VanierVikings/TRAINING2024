@@ -1,18 +1,14 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.HangConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Amp;
 import frc.robot.commands.FloorIntake;
 import frc.robot.commands.HangRetract;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.Prime;
-import frc.robot.commands.TopIntake;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hang;
 import frc.robot.subsystems.Intake;
@@ -40,12 +36,6 @@ public class RobotContainer {
                 () -> m_drivetrain.drive(controllers.mDriver.getLeftY(), controllers.mDriver.getRightY()),
                 m_drivetrain));        
 
-        // Amp Shoot
-        controllers.mControls
-                .b()
-                .whileTrue(
-                new Amp(m_shooter, m_intake).withTimeout(0.5));
-
         // Shooter Prime
         controllers.mControls
                 .leftTrigger()
@@ -69,12 +59,6 @@ public class RobotContainer {
                 .rightBumper()
                 .whileTrue(
                         new FloorIntake(m_intake, IntakeConstants.speed));
-
-        // Top Intake
-        controllers.mControls
-                .x()
-                .whileTrue(
-                        new TopIntake(m_shooter));
 
         // Hang Winch
         controllers.mControls
