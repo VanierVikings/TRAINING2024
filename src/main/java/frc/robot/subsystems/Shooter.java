@@ -30,9 +30,9 @@ public class Shooter extends SubsystemBase {
         shooterTopFeed.set(VictorSPXControlMode.PercentOutput, speed);
     }
 
-    public void set(double setpoint) {
-        shooterPrimeLeft.set(setpoint);
-        shooterPrimeRight.set(-setpoint);
+    public void set(double speed) {
+        shooterPrimeLeft.set(speed);
+        shooterPrimeRight.set(-speed);
     }   
 
     public void stop() {
