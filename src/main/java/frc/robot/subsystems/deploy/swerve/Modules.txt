@@ -1,0 +1,21 @@
+Pidgeon ID: 13
+
+Front Left
+Kraken: 1
+SparkMax: 2
+Encoder: 0
+
+Front Right
+Kraken: 4
+SparkMax: 5
+Encoder: 0
+
+Back Left
+Kraken: 7
+SparkMax: 8
+Encoder: 0
+
+Back Right
+Kraken: 10
+SparkMax: 11
+Encoder: 0
