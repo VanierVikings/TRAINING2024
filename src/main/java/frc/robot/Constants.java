@@ -40,6 +40,8 @@ public final class Constants {
   }
 
   public static final class ShooterConstants {
+    public static final int leftSpeed = -1;
+    public static final int rightSpeed = 1;
     public static final int shooterLeftID = 22;
     public static final int shooterRightID = 23;
   }
